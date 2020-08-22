@@ -1,0 +1,37 @@
+<SearchPage>:
+    name: 'search_page'
+    search_list_recycle: search_list
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 8
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, .05
+
+            TextInput:
+                hint_text: 'https://boxnovel.com/novel/mini-world-of-endless-fun-awaits/'
+
+            Button:
+                text: 'Search'
+                on_press: root.search(root.search_keyword)
+                size_hint: .1, 1
+
+        RecycleView:
+            id: search_list
+            viewclass: 'SearchItem'
+            data: [{'text': 'Cultivation Chat Group', 'url': 'https://boxnovel.com/novel/mini-world-of-endless-fun-awaits/'} for i in range(10)]
+
+            RecycleBoxLayout:
+                orientation: 'vertical'
+                spacing: 2
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+
+        BottomControlBar:
+
+<SearchItem>:
+    on_press: root.browse(root.url)
