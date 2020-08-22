@@ -1,3 +1,4 @@
+#: import SlideTransition kivy.uix.screenmanager.SlideTransition
 <LibraryPage>:
     name: 'library_page'
     novellist: novellist
@@ -45,8 +46,9 @@
     
     Label:
         text: root.title
-        text_size: root.width, None  
-        size: self.texture_size
+        text_size: root.width, None  # allows wrapping
+        height: self.texture_size[1]
+        # size: self.texture_size
     
 <BottomControlBar>:
     orientation: 'horizontal'
@@ -58,11 +60,18 @@
         text: 'Library'
         background_normal: ''
         background_color: .5, .2, .3, .5
+        on_press:
+            app.root.current = 'library_page'
+            app.root.transition = SlideTransition(direction='left')
 
     Button:
         text: 'Search'
         on_press:
             app.root.current = 'search_page'
+            app.root.transition = SlideTransition(direction='right')
 
     Button:
         text: 'Downloads'
+        on_press:
+            app.root.current = 'downloads_page'
+            app.root.transition = SlideTransition(direction='right')
