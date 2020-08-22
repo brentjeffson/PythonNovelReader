@@ -1,0 +1,68 @@
+<LibraryPage>:
+    name: 'library_page'
+    novellist: novellist
+    bottom_controls: controls
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+        padding: 0, 12, 0, 0
+
+        NovelList:
+            id: novellist
+
+        BottomControlBar:
+            id: controls
+
+
+<NovelList>:
+    viewclass: 'NovelItem'
+    novellist: novel_recycle_list
+
+    RecycleGridLayout:
+        id: novel_recycle_list
+        cols: 3
+        padding: 46, 64, 46, 46
+        spacing: 72, 92
+        default_size: None, dp(56)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+
+
+
+<NovelItem>:
+    orientation: 'vertical'
+    spacing: 72
+
+    Label:
+        
+        Image:
+            center: self.parent.center
+            source: root.thumbnail
+            allow_stretch: True
+            keep_ratio: False
+    
+    Label:
+        text: root.title
+        text_size: root.width, None  
+        size: self.texture_size
+    
+<BottomControlBar>:
+    orientation: 'horizontal'
+    size_hint: 1, .1
+    library_btn: library_btn
+
+    Button:
+        id: library_btn
+        text: 'Library'
+        background_normal: ''
+        background_color: .5, .2, .3, .5
+
+    Button:
+        text: 'Search'
+        on_press:
+            app.root.current = 'search_page'
+
+    Button:
+        text: 'Downloads'
