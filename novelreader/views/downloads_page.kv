@@ -1,0 +1,40 @@
+<DownloadsPage>:
+    name: 'downloads_page'
+    downloads_list: downloads_recycleview
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        GridLayout:
+            rows: 1
+            cols: 2
+            size_hint_y: .05
+
+            Button:
+                text: 'Start All'
+                on_press: print('Unimplemented')
+
+            Button:
+                text: 'Pause All'
+                on_press: print('Unimplemented')
+
+        RecycleView:
+            id: downloads_recycleview
+            viewclass: 'DownloadItem'
+
+            RecycleBoxLayout:
+                orientation: 'vertical'
+                spacing: 4
+
+        BottomControlBar:
+
+<DownloadItem>:
+    orientation: 'horizontal'
+
+    Label:
+        text: root.novel.title
+    
+    Button:
+        text: 'Pause' if root.is_downloading else 'Resume'
+        on_press: root.pause() if root.is_downloading else root.resume()
+
