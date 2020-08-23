@@ -10,7 +10,7 @@ Builder.load_file('../views/library_page.kv')
 class LibraryPage(Screen):
     novellist = ObjectProperty(None)
     bottom_controls = ObjectProperty(None)
-    
+
     def __init__(self, **kwargs):
         super(LibraryPage, self).__init__(**kwargs)
 
@@ -20,11 +20,7 @@ class NovelList(RecycleView):
 
     def __init__(self, **kwargs):
         super(NovelList, self).__init__(**kwargs)
-        self.data = [
-            {}
-        ]
-        for i in range(36):
-            self.data.append({})
+        self.data = [{} for i in range(12)]
 
 # todo recyclerview behavior
 # todo NovelItem
