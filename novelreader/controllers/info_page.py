@@ -10,7 +10,6 @@ class InfoPage(Screen):
     # todo accept novel object from library page or search page
     def __init__(self, **kwargs):
         super(InfoPage, self).__init__(**kwargs)
-        self.novel = self.manager.get_screen('library_page').selected_novel
 
 class ChapterItem(GridLayout):
     """Chapter list item"""

@@ -20,36 +20,42 @@
     viewclass: 'NovelItem'
     novellist: novel_recycle_list
 
-    RecycleGridLayout:
+    SelectableRecycleBoxLayout:
         id: novel_recycle_list
         cols: 5
-        padding: 12, 10, 12, 10
-        spacing: 20, 92
-        default_size: None, dp(56)
-        default_size_hint: 1, None
+        padding: 12, 10, 12, 82
+        spacing: 29, 4
+        
+        # row_force_default: True
+        # row_default_height: dp(147.2)
+        # col_force_default: True
+        # col_default_width: dp(56)
+
+        # size_hint: None, None
+        # height: 56
+        # width: 147.2
+
+        default_size: dp(140), dp(127)
+        default_size_hint: None, None
         size_hint_y: None
         height: self.minimum_height
 
 <NovelItem>:
     rows: 2
-    size_hint_y: None
-    height: 120
     spacing: 2
 
     Image:
         size_hint_y: None
         height: 120 * 0.7
         center: self.parent.center
-        source: root.novel['thumbnail']
+        source: root.thumbnail
         allow_stretch: True
         keep_ratio: False
 
-    Button:
-        text: root.novel['title'][:20] #if len(root.title) <= 20 else root.title[:20]
+    Label:
+        text: root.title[:20]
         size_hint_y: None
         height: 120 * .3
-        on_press:
-            print(root.novel['title'])
         # text_size: root.width, None  # allows wrapping
         # height: self.texture_size[1]
         # size: self.texture_size

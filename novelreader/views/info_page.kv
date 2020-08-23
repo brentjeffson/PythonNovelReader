@@ -11,7 +11,7 @@
             Label: 
                 Image:
                     center: self.parent.center
-                    source: root.novel_thumbnail_url
+                    # source: root.novel_thumbnail_url
                     allow_stretch: True
                     keep_ratio: False
             
@@ -20,28 +20,28 @@
 
                 Label:
                     bold: True
-                    text: root.novel.title
+                    # text: root.novel.title
                     font_size: 18
                 
                 InfoItem:
                     name: 'Authors'
-                    value: ','.join(root.novel.authors)
+                    # value: ','.join(root.novel.authors)
                 
                 InfoItem:
                     name: 'Genres'
-                    value: ','.join(root.novel.genres)
+                    # value: ','.join(root.novel.genres)
                 
                 InfoItem:
                     name: 'Release'
-                    value: root.novel.release
+                    # value: root.novel.release
                 
                 InfoItem:
                     name: 'Status'
-                    value: root.novel.status
+                    # value: root.novel.status
                 
                 InfoItem:
                     name: 'Rating'
-                    value: root.novel.rating
+                    # value: root.novel.rating
 
         RecycleLayout:
             id: chapter_list
@@ -49,7 +49,7 @@
 
         BottomControlBar:
 
-<InfoItem@GridLayout>
+<InfoItem>
     cols: 2
     row_force_default: True
     row_default_height: 40

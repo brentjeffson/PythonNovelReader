@@ -22,9 +22,7 @@ class NovelList(RecycleView):
         super(NovelList, self).__init__(**kwargs)
         # self.data = [{} for i in range(12)]
         self.data = [{
-            'title': 'Cultivation 1',
             'thumbnail': '../public/imgs/cultivation-chat-group.jpg',
-            'is_selected': False
         }]
         # self.data.append({'novel': {'title': 'New Novel', 'thumbnail': '../public/imgs/cultivation-chat-group.jpg'}})
 
@@ -39,13 +37,11 @@ class NovelItem(RecycleDataViewBehavior, GridLayout):
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
 
-    novel = ObjectProperty(None)
-    title = StringProperty('')
+    title = StringProperty('Cultivation Chat Group')
     thumbnail = StringProperty('../public/imgs/cultivation-chat-group.jpg')
-    is_selected = BooleanProperty(False)
 
-    # def __init__(self, **kwargs):
-    #     super(NovelItem, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        super(NovelItem, self).__init__(**kwargs)
 
     ''' Add selection support to the Label '''
     def refresh_view_attrs(self, rv, index, data):
