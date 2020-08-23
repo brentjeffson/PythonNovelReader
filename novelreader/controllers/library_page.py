@@ -14,19 +14,6 @@ class LibraryPage(Screen):
     def __init__(self, **kwargs):
         super(LibraryPage, self).__init__(**kwargs)
 
-    def get_selected_novel(self):
-        # todo implement getting selected novel from list
-        print(self.novellist.ids['novel_recycle_list'])
-        # print(self.novellist.data)
-        # selected_novel = None
-        # for idx, novel in enumerate(self.novellist.data):
-        #     if novel['is_selected']:
-        #         selected_novel = novel
-        #         self.novellist.data[idx]['is_selected'] = False
-        #         break
-        # print(self.novellist.data)
-        # return selected_novel
-
 # recyclerview
 class NovelList(RecycleView):
     novellist = ObjectProperty(None)
