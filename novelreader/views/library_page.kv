@@ -30,26 +30,24 @@
         size_hint_y: None
         height: self.minimum_height
 
-
-
 <NovelItem>:
     orientation: 'vertical'
     spacing: 72
 
     Label:
-        
+
         Image:
             center: self.parent.center
             source: root.thumbnail
             allow_stretch: True
             keep_ratio: False
-    
+
     Label:
         text: root.title
         text_size: root.width, None  # allows wrapping
         height: self.texture_size[1]
         # size: self.texture_size
-    
+
 <BottomControlBar>:
     orientation: 'horizontal'
     size_hint: 1, .1
