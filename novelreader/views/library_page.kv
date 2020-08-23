@@ -1,4 +1,4 @@
-#: import SlideTransition kivy.uix.screenmanager.SlideTransition
+#: import NoTransition kivy.uix.screenmanager.NoTransition
 <LibraryPage>:
     name: 'library_page'
     novellist: novellist
@@ -54,6 +54,8 @@
     orientation: 'horizontal'
     size_hint: 1, .1
     library_btn: library_btn
+    search_btn: search_btn
+    downloads_btn: downloads_btn
 
     Button:
         id: library_btn
@@ -62,16 +64,18 @@
         background_color: .5, .2, .3, .5
         on_press:
             app.root.current = 'library_page'
-            app.root.transition = SlideTransition(direction='left')
+            app.root.transition = NoTransition()
 
     Button:
+        id: search_btn
         text: 'Search'
         on_press:
             app.root.current = 'search_page'
-            app.root.transition = SlideTransition(direction='right')
+            app.root.transition = NoTransition()
 
     Button:
+        id: downloads_btn
         text: 'Downloads'
         on_press:
             app.root.current = 'downloads_page'
-            app.root.transition = SlideTransition(direction='right')
+            app.root.transition = NoTransition()
