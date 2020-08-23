@@ -1,8 +1,6 @@
-from kivy.app import Builder
-from kivy.properties import ObjectProperty, StringProperty
-from kivy.uix.screenmanager import Screen
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.recycleview import RecycleView
+from . import Builder, Screen
+from . import ObjectProperty, StringProperty
+from . import GridLayout, BoxLayout, RecycleView
 
 Builder.load_file('../views/library_page.kv')
 
@@ -24,9 +22,11 @@ class NovelList(RecycleView):
 
 # todo recyclerview behavior
 # todo NovelItem
-class NovelItem(BoxLayout):
-    thumbnail = StringProperty('../public/imgs/cultivation-chat-group.jpg')
-    title = StringProperty('Cultivation Chat Group')
+class NovelItem(GridLayout):
+    novel = ObjectProperty({
+        'thumbnail': '../public/imgs/cultivation-chat-group.jpg',
+        'title': 'Cultivation Chat Group'
+        })
 
     def __init__(self, **kwargs):
         super(NovelItem, self).__init__(**kwargs)
