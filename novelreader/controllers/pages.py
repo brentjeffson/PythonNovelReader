@@ -2,7 +2,7 @@ from kivy.app import Builder
 from kivy.uix.screenmanager import ScreenManager
 from novelreader.controllers.library_page import LibraryPage
 from novelreader.controllers.search_page import SearchPage
-from novelreader.controllers.download_page import DownloadPage
+from novelreader.controllers.downloads_page import DownloadsPage
 
 
 class PageManager(ScreenManager):
