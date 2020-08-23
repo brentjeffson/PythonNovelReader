@@ -38,6 +38,8 @@ class NovelItem(BoxLayout):
 
 class BottomControlBar(BoxLayout):
     library_btn = ObjectProperty(None)
+    search_btn = ObjectProperty(None)
+    downloads_btn = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(BottomControlBar, self).__init__(**kwargs)
