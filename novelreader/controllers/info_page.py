@@ -1,13 +1,17 @@
 from . import Builder, Screen
 from . import ObjectProperty, StringProperty
 from . import GridLayout
+from . import Path
 
-Builder.load_file('../views/info_page.kv')
+Builder.load_file(str(Path('novelreader/views/info_page.kv').absolute()))
 
 class InfoPage(Screen):
     """Page containing informations related to novel"""
-    novel = ObjectProperty()
-    # todo accept novel object from library page or search page
+    novel = ObjectProperty({
+        'title': '',
+        'thumbnail': ''
+    })
+    
     def __init__(self, **kwargs):
         super(InfoPage, self).__init__(**kwargs)
 

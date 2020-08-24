@@ -3,8 +3,9 @@ from . import ObjectProperty, StringProperty, BooleanProperty
 from . import RecycleView, RecycleGridLayout
 from . import RecycleDataViewBehavior, FocusBehavior, LayoutSelectionBehavior
 from . import GridLayout, BoxLayout
+from . import Path
 
-Builder.load_file('../views/library_page.kv')
+Builder.load_file(str(Path('novelreader/views/library_page.kv').absolute()))
 
 # todo library page
 class LibraryPage(Screen):
@@ -13,6 +14,20 @@ class LibraryPage(Screen):
 
     def __init__(self, **kwargs):
         super(LibraryPage, self).__init__(**kwargs)
+        # self.__selected_novel = None
+    
+    # @property
+    # def selected_novel(self):
+    #     return self.__selected_novel
+    def get_selected_novel(self):
+        return self.selected_novel
+    
+    def goto_info_page(self, novel):
+        print(dir(self.manager.get_screen('info_page')))
+        self.manager.get_screen('info_page').novel = novel
+        # self.manager.get_screen('info_page').title = novel['title']
+        self.manager.current = 'info_page'
+
 
 # recyclerview
 class NovelList(RecycleView):
@@ -22,12 +37,10 @@ class NovelList(RecycleView):
         super(NovelList, self).__init__(**kwargs)
         # self.data = [{} for i in range(12)]
         self.data = [{
-            'thumbnail': '../public/imgs/cultivation-chat-group.jpg',
+            'title': 'The First Order',
+            'thumbnail': str(Path('novelreader/public/imgs/cultivation-chat-group.jpg').absolute())
         }]
-        # self.data.append({'novel': {'title': 'New Novel', 'thumbnail': '../public/imgs/cultivation-chat-group.jpg'}})
 
-# todo recyclerview behavior
-# todo NovelItem
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
                                      RecycleGridLayout):
         ''' Adds selection and focus behaviour to the view. '''
@@ -37,8 +50,8 @@ class NovelItem(RecycleDataViewBehavior, GridLayout):
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
 
-    title = StringProperty('Cultivation Chat Group')
-    thumbnail = StringProperty('../public/imgs/cultivation-chat-group.jpg')
+    title = StringProperty('')
+    thumbnail = StringProperty('')
 
     def __init__(self, **kwargs):
         super(NovelItem, self).__init__(**kwargs)
@@ -60,10 +73,7 @@ class NovelItem(RecycleDataViewBehavior, GridLayout):
         ''' Respond to the selection of items in the view. '''
         self.selected = is_selected
         if is_selected:
-            print("selection changed to {0}".format(rv.data[index]))
-        else:
-            print("selection removed for {0}".format(rv.data[index]))
-
+            rv.parent.parent.goto_info_page(rv.data[index])
 
 class BottomControlBar(BoxLayout):
     library_btn = ObjectProperty(None)

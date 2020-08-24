@@ -7,11 +7,12 @@
         GridLayout:
             rows: 1
             cols: 2
+            size_hint_y: 0.25
 
             Label: 
                 Image:
                     center: self.parent.center
-                    # source: root.novel_thumbnail_url
+                    source: root.novel['thumbnail']
                     allow_stretch: True
                     keep_ratio: False
             
@@ -20,7 +21,7 @@
 
                 Label:
                     bold: True
-                    # text: root.novel.title
+                    text: root.novel['title']
                     font_size: 18
                 
                 InfoItem:
@@ -56,6 +57,7 @@
 
     Label: 
         text: root.name
+        
     Label:
         text: root.value
 

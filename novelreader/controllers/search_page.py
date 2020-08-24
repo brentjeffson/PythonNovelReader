@@ -1,9 +1,9 @@
 from . import Screen, Builder
 from . import ObjectProperty, StringProperty
 from . import Label, Button
-from . import plog
+from . import plog, Path
 
-Builder.load_file("../views/search_page.kv")
+Builder.load_file(str(Path("novelreader/views/search_page.kv").absolute()))
 
 class SearchPage(Screen):
     search_list_recycle = ObjectProperty()

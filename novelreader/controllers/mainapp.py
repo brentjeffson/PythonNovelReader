@@ -2,9 +2,10 @@ from kivy.app import App, Builder
 from kivy.core.window import Window
 from novelreader.controllers.pages import PageManager
 from kivy.config import Config
+from . import Path
 
 Window.size = (840, 640)
-pages_manager = Builder.load_file("../views/pages.kv")
+pages_manager = Builder.load_file(str(Path("novelreader/views/pages.kv").absolute()))
 
 class MainApp(App):
 
@@ -20,10 +21,3 @@ class MainApp(App):
         # resize Y
         if y > 640 or y < 640:
             Window.size = (Window.size[0], 640)  # 840, 640
-
-
-if __name__ == "__main__":
-    app = MainApp()
-    app.title = 'Novel Reader'
-    app.run()
-    
