@@ -1,6 +1,6 @@
 import aiohttp
-from wescrape.wescrape.models.novel import Novel
-from wescrape.wescrape.parsers.nparse import NovelBaseParser
+from wescrape.models.novel import Novel
+from wescrape.parsers.nparse import NovelBaseParser
 from bs4 import BeautifulSoup
 
 async def fetch_markup(session: aiohttp.ClientSession, url: str) -> str:
@@ -9,7 +9,7 @@ async def fetch_markup(session: aiohttp.ClientSession, url: str) -> str:
         if resp.reason.lower() != 'ok':
             return None, resp.status
         
-        return await resp.text, resp.status
+        return await resp.text(), resp.status
 
 async def parse_markup(markup: str, parser: str = "html.parser"):
     """Parse markup using BeautifulSoup"""
@@ -19,16 +19,9 @@ async def parse_markup(markup: str, parser: str = "html.parser"):
 # parse novel information together with its chapters
 async def get_novel(url: str, soup: BeautifulSoup, parser: NovelBaseParser) -> Novel:
     """Get data on the novel from the parsed markup `soup`"""
-    title = parser.get_title(soup)
-    meta = parser.get_meta(soup)
-    chapters = parser.get_chapters(soup)
-    return Novel(
-        id=url,
-        title=title,
-        url=url,
-        meta=meta,
-        chapters=chapters
-    )
+    novel = parser.get_novel(soup)
+    novel.url = url
+    return novel
 
 # todo parse_content, parse content of a chapter
 async def get_content(soup: BeautifulSoup, parser: NovelBaseParser) -> str:
