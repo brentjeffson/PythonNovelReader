@@ -1,15 +1,12 @@
-import aiohttp
+import requests
 from wescrape.models.novel import Novel
 from wescrape.parsers.nparse import NovelBaseParser
 from bs4 import BeautifulSoup
 
-async def fetch_markup(session: aiohttp.ClientSession, url: str) -> str:
+def fetch_markup(session: requests.Session, url: str) -> str:
     """Fetch markup of `URL` from web."""
-    async with session.get(url) as resp:
-        if resp.reason.lower() != 'ok':
-            return None, resp.status
-        
-        return await resp.text(), resp.status
+    with session.get(url) as resp:
+        return resp.text, resp.status_code
 
 async def parse_markup(markup: str, parser: str = "html.parser"):
     """Parse markup using BeautifulSoup"""
