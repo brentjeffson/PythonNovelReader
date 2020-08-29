@@ -1,13 +1,15 @@
-from . import Builder, Screen
-from . import ObjectProperty, StringProperty
-from . import GridLayout, Button
-from . import Path
+from kivy.app import Builder
+from kivy.properties import ObjectProperty, StringProperty
+from kivy.uix.screenmanager import Screen
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
 from . import get_session, get_loop
 from . import plog
 from wescrape.parsers.helpers import identify_parser
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from wescrape.models.novel import Novel, Meta, Website
 from novelreader.services.ndownloader import (fetch_markup, parse_markup, get_novel)
+from pathlib import Path
 
 Builder.load_file(str(Path('novelreader/views/info_page.kv').absolute()))
 
