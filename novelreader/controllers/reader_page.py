@@ -1,5 +1,6 @@
-from . import Builder, Screen
-from . import Path
+from kivy.app import Builder
+from kivy.uix.screenmanager import Screen
+from pathlib import Path
 
 Builder.load_file(str(Path('novelreader/views/reader_page.kv').absolute()))
 
