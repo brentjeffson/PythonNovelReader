@@ -1,9 +1,16 @@
 <InfoPage>:
     name: 'info_page'
+    title: title
+    authors: authors
+    genres: genres
+    release_date: release_date
+    status: status
+    rating: rating
     chapter_list: chapter_list
 
-    GridLayout:
-        rows: 3
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 8
         
         GridLayout:
             rows: 1
@@ -13,7 +20,7 @@
             Label: 
                 Image:
                     center: self.parent.center
-                    source: root.novel['thumbnail']
+                    source: root.novel.thumbnail
                     allow_stretch: True
                     keep_ratio: False
             
@@ -21,40 +28,58 @@
                 rows: 6
 
                 Label:
+                    id: title
                     bold: True
-                    text: root.novel['title']
                     font_size: 18
                 
                 InfoItem:
+                    id: authors
                     name: 'Authors'
-                    # value: ','.join(root.novel.authors)
+                    value: ','.join(root.novel.meta.authors)
                 
                 InfoItem:
+                    id: genres
                     name: 'Genres'
-                    # value: ','.join(root.novel.genres)
+                    value: ','.join(root.novel.meta.genres)
                 
                 InfoItem:
+                    id: release_date
                     name: 'Release'
-                    # value: root.novel.release
+                    value: root.novel.meta.release_date
                 
                 InfoItem:
+                    id: status
                     name: 'Status'
-                    # value: root.novel.status
+                    value: root.novel.meta.status
                 
                 InfoItem:
+                    id: rating
                     name: 'Rating'
-                    # value: root.novel.rating
+                    value: root.novel.meta.rating
 
-        RecycleLayout:
+        RecycleView:
             id: chapter_list
+            size_hint_y: 0.5
             viewclass: 'ChapterItem'
+            data: [{"text": 'Chapter 1'}]
+
+            RecycleBoxLayout:
+                orientation: 'vertical'
+                spacing: 2
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
 
         BottomControlBar:
 
+<ChapterItem>
+    on_press: root.read()
+
 <InfoItem>
     cols: 2
-    row_force_default: True
-    row_default_height: 40
+    # row_force_default: True
+    # row_default_height: 40
 
     Label: 
         text: root.name
