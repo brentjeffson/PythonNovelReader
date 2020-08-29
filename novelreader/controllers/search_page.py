@@ -15,6 +15,10 @@ class SearchPage(Screen):
     def __init__(self, **kwargs):
         super(SearchPage, self).__init__(**kwargs)
 
+    def goto_info_page(self, url):
+        self.manager.get_screen("info_page").fetch_novel(url)
+        self.manager.current = "info_page"
+
     async def fetch_novels(self, session, payload):
         async with session.post("https://boxnovel.com/wp-admin/admin-ajax.php", data=payload) as resp:
             return await resp.json()
@@ -48,9 +52,9 @@ class SearchPage(Screen):
 class SearchItem(Button):
     url = StringProperty()
 
-    def browse(self, url):
+    def browse(self):
         plog(['browsing'], self.text)
-
+        self.parent.parent.parent.parent.goto_info_page(self.url)
 
 
 
