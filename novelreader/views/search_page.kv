@@ -1,6 +1,7 @@
 <SearchPage>:
     name: 'search_page'
     search_list_recycle: search_list
+    search_input: search_input
 
     BoxLayout:
         orientation: 'vertical'
@@ -11,11 +12,13 @@
             size_hint: 1, .05
 
             TextInput:
+                id: search_input
+                text: 'mini'
                 hint_text: 'https://boxnovel.com/novel/mini-world-of-endless-fun-awaits/'
 
             Button:
                 text: 'Search'
-                on_press: root.search(root.search_keyword)
+                on_press: root.search()
                 size_hint: .1, 1
 
         RecycleView:
