@@ -1,15 +1,18 @@
 from kivy.app import Builder
+from kivy.clock import Clock
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
-from . import get_session, get_loop
-from . import plog
 from wescrape.parsers.helpers import identify_parser
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from wescrape.models.novel import Novel, Meta, Website
-from novelreader.services.ndownloader import (fetch_markup, parse_markup, get_novel)
+from novelreader.services.ndownloader import (fetch_markup, parse_markup, get_content)
 from pathlib import Path
+from . import plog
+from functools import partial
+import requests
+
 
 Builder.load_file(str(Path('novelreader/views/info_page.kv').absolute()))
 
@@ -38,31 +41,22 @@ class InfoPage(Screen):
     def __init__(self, **kwargs):
         super(InfoPage, self).__init__(**kwargs)
 
-    # get novel from database or web
-    def fetch_novel(self, url):
+    def prep_content(self, url):
         # todo fetch novel from database
         # if None; fetch from web
-        loop = get_loop()
-        session = get_session()
-        loop.run_until_complete(self.process_web_fetch(session, url))
-        print(self.ids.keys())
+        with requests.Session() as session:
+            Clock.schedule_once(partial(self.fetch_content, session, url), 0)
 
-    # fetch novel from web
-    async def process_web_fetch(self, session, url):
-        parser_type = identify_parser(url)
-        parser = None
-        if Website.BOXNOVELCOM == parser_type:
-            parser = BoxNovelCom()
-        elif Website.WUXIAWORLDCO == parser_type:
-            parser = WuxiaWorldCo()
+    def fetch_content(self, session, url, _):
+        parser = identify_parser(url)
 
-        markup, status = await fetch_markup(session, url)
-        soup = await parse_markup(markup)
-        novel = await get_novel(url, soup, parser)    
-        dict_chapters = [{"text": chapter.title, "url": chapter.url}for chapter in novel.chapters]
-        self.chapter_list.data = dict_chapters
-        self.update_widgets(novel)
-        plog(["FETCHED"], url)
+        reader_page = self.manager.get_screen("reader_page")
+        markup, status_code = fetch_markup(session, url)
+        soup = parse_markup(markup)
+        content = get_content(soup, parser)
+        if content is not None:
+            reader_page.update_content(content)
+            self.manager.current = "reader_page"
     
     def update_widgets(self, novel):
         self.title.text = novel.title
@@ -70,13 +64,16 @@ class InfoPage(Screen):
         self.genres.value = ', '.join(novel.meta.genres)
         self.status.value = novel.meta.status.name
         self.release_date.value = novel.meta.release_date
+        dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
+        self.chapter_list.data = dict_chapters
 
 class ChapterItem(Button):
     """Chapter list item"""
     url = StringProperty()
 
     def read(self):
-        plog(["READING"], self.text)
+        plog(["reading"], self.text)
+        self.parent.parent.parent.parent.prep_content(self.url)
 
 class InfoItem(GridLayout):
     """Contain a name and value"""
