@@ -11,19 +11,18 @@
     BoxLayout:
         orientation: 'vertical'
         spacing: 8
-        
+
         GridLayout:
-            rows: 1
+            rows: 2
             cols: 2
             size_hint_y: 0.25
 
-            Label: 
+            Label:
                 Image:
                     center: self.parent.center
-                    source: root.novel.thumbnail
                     allow_stretch: True
                     keep_ratio: False
-            
+
             GridLayout:
                 rows: 6
 
@@ -31,31 +30,30 @@
                     id: title
                     bold: True
                     font_size: 18
-                
+
                 InfoItem:
                     id: authors
                     name: 'Authors'
-                    value: ','.join(root.novel.meta.authors)
-                
+
                 InfoItem:
                     id: genres
                     name: 'Genres'
-                    value: ','.join(root.novel.meta.genres)
-                
+
                 InfoItem:
                     id: release_date
                     name: 'Release'
-                    value: root.novel.meta.release_date
-                
+
                 InfoItem:
                     id: status
                     name: 'Status'
-                    value: root.novel.meta.status
-                
+
                 InfoItem:
                     id: rating
                     name: 'Rating'
-                    value: root.novel.meta.rating
+            
+            Button:
+                text: 'Add to library'
+                on_press: root.add_to_library()
 
         RecycleView:
             id: chapter_list
@@ -78,12 +76,9 @@
 
 <InfoItem>
     cols: 2
-    # row_force_default: True
-    # row_default_height: 40
 
-    Label: 
+    Label:
         text: root.name
-        
+
     Label:
         text: root.value
-
