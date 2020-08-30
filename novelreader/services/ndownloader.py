@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 def fetch_markup(session: requests.Session, url: str) -> str:
     """Fetch markup of `URL` from web."""
-    resp = session.get(url):
+    resp = session.get(url)
     if resp.ok:
         return resp.text, resp.status_code
     return None, resp.status_code
