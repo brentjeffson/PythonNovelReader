@@ -26,7 +26,6 @@ class InfoPage(Screen):
     release_date = ObjectProperty()
     status = ObjectProperty()
     rating = ObjectProperty()
-    url = StringProperty()
 
     novel = ObjectProperty(Novel(
         id=-1,
@@ -44,16 +43,36 @@ class InfoPage(Screen):
         super(InfoPage, self).__init__(**kwargs)
 
     def add_to_library(self):
+        """Add Current Instance Of Novel To Database"""
         conn = sql.connect(Path("novelreader", "public", "novel.db").absolute())
-        cur = conn.cursor()
+        # cur = conn.cursor()
         
-        cur.execute("""SELECT URL FROM NOVELS WHERE URL == ?""", (self.url))
-        rows = cur.fetchone()
-        if rows is None:
-            cur.execute("""INSERT INTO NOVELS(URL, TITLE) VALUES(?, ?, ?)""", (self.url, self.title.text))
+        rows = conn.execute("""SELECT URL FROM NOVELS WHERE URL == ?""", (self.novel.url,))
+
+        if len(rows.fetchall()) == 0:
+            conn.execute("""INSERT INTO NOVELS(URL, TITLE) VALUES(?, ?)""", (self.novel.url, self.novel.title))
+            conn.execute("""INSERT INTO METAS(
+                NOVEL_URL, 
+                AUTHORS, 
+                GENRES, 
+                RATING, 
+                RELEASE_DATE, 
+                STATUS, 
+                DESCRIPTION) VALUES(?, ?, ?, ?, ?, ?, ?)""", 
+                (
+                    self.novel.url, 
+                    ", ".join(self.novel.meta.authors),
+                    ", ".join(self.novel.meta.genres),
+                    self.novel.meta.rating,
+                    self.novel.meta.release_date,
+                    self.novel.meta.status.name,
+                    self.novel.meta.description
+                )
+            )
             plog(["add to library"], self.title.text)
         else:
             plog(["in library"], self.title.text)
+        conn.commit()
         conn.close()
 
 
@@ -75,6 +94,7 @@ class InfoPage(Screen):
             self.manager.current = "reader_page"
     
     def update_widgets(self, novel):
+        self.novel = novel
         self.title.text = novel.title
         self.authors.value = ', '.join(novel.meta.authors)
         self.genres.value = ', '.join(novel.meta.genres)
