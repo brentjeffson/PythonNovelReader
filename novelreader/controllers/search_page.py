@@ -27,17 +27,13 @@ class SearchPage(Screen):
         info_page.ids.chapter_list.data.clear()
 
         with requests.Session() as session:
-            parser_type = identify_parser(url)
-            parser = None
-            if Website.BOXNOVELCOM == parser_type:
-                parser = BoxNovelCom()
-            elif Website.WUXIAWORLDCO == parser_type:
-                parser = WuxiaWorldCo()
-            markup, status_code = fetch_markup(session, url)
-            soup = parse_markup(markup)
-            novel = get_novel(url, soup, parser)
-            info_page.update_widgets(novel)
-            self.manager.current = "info_page"
+            parser = identify_parser(url)
+            if parser is not None:
+                markup, status_code = fetch_markup(session, url)
+                soup = parse_markup(markup)
+                novel = get_novel(url, soup, parser)
+                info_page.update_widgets(novel)
+                self.manager.current = "info_page"
 
     def fetch_novels(self, session, _):
         payload = {
