@@ -53,7 +53,6 @@ class SearchPage(Screen):
         self.search_list_recycle.data = []
         with requests.Session() as session:
             Clock.schedule_once(partial(self.fetch_novels, session), 0)
-        
 
 class SearchItem(Button):
     url = StringProperty()
@@ -61,7 +60,7 @@ class SearchItem(Button):
     def browse(self):
         plog(['browsing'], self.text)
         Clock.schedule_once(partial(self.parent.parent.parent.parent.goto_info_page, self.url), 0)
-        
+
 
 
 
