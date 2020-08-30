@@ -12,6 +12,7 @@ from pathlib import Path
 from . import plog
 from functools import partial
 import requests
+import sqlite3 as sql
 
 
 Builder.load_file(str(Path('novelreader/views/info_page.kv').absolute()))
@@ -25,6 +26,7 @@ class InfoPage(Screen):
     release_date = ObjectProperty()
     status = ObjectProperty()
     rating = ObjectProperty()
+    url = StringProperty()
 
     novel = ObjectProperty(Novel(
         id=-1,
@@ -40,6 +42,20 @@ class InfoPage(Screen):
     
     def __init__(self, **kwargs):
         super(InfoPage, self).__init__(**kwargs)
+
+    def add_to_library(self):
+        conn = sql.connect(Path("novelreader", "public", "novel.db").absolute())
+        cur = conn.cursor()
+        
+        cur.execute("""SELECT URL FROM NOVELS WHERE URL == ?""", (self.url))
+        rows = cur.fetchone()
+        if rows is None:
+            cur.execute("""INSERT INTO NOVELS(URL, TITLE) VALUES(?, ?, ?)""", (self.url, self.title.text))
+            plog(["add to library"], self.title.text)
+        else:
+            plog(["in library"], self.title.text)
+        conn.close()
+
 
     def prep_content(self, url):
         # todo fetch novel from database
