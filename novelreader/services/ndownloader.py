@@ -5,8 +5,10 @@ from bs4 import BeautifulSoup
 
 def fetch_markup(session: requests.Session, url: str) -> str:
     """Fetch markup of `URL` from web."""
-    with session.get(url) as resp:
+    resp = session.get(url):
+    if resp.ok:
         return resp.text, resp.status_code
+    return None, resp.status_code
 
 def parse_markup(markup: str, parser: str = "html.parser"):
     """Parse markup using BeautifulSoup"""
