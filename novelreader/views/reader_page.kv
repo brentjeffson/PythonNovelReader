@@ -1,13 +1,19 @@
 <ReaderPage>:
     name: 'reader_page'
-    chapter_content: content
 
-    GridLayout:
-        rows: 1
-        cols: 1
-    
-        Label:
-            id: content
-            size_hint: 1, 1
-    
-    BottomControlBar:
+    BoxLayout:
+        orientation: 'vertical'
+
+        ScrollView:
+            id: content_scroll
+            do_scroll_x: False
+            do_scroll_y: True
+
+            Label:
+                id: content
+                padding: 12, 12
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: root.width, None
+
+        BottomControlBar:
