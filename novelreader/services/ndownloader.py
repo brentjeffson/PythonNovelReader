@@ -7,7 +7,7 @@ from pathlib import Path
 def download_thumbnail(session: requests.Session, url: str) -> bool:
     filename = url.split("/")[-1]
     img_path = Path("novelreader", "public", "imgs", filename).absolute()
-    if not img_path.exists:
+    if not img_path.exists():
         resp = session.get(url)
         if resp.ok:
             img_path.write_bytes(resp.content)
