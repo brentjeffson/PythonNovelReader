@@ -6,3 +6,5 @@ novelreader/public/novel.db
 test.db
 
 novelreader/public/
+
+*.code-workspace
