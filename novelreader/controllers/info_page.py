@@ -6,7 +6,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from wescrape.helpers import identify_parser, identify_status
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
-from wescrape.models.novel import Novel, Meta, Website, Status
+from wescrape.models.novel import Novel, Meta, Website, Status, Chapter
 from novelreader.models import Database
 from novelreader.helpers import plog
 from novelreader.services.ndownloader import (download_thumbnail, fetch_markup, parse_markup, 
@@ -51,6 +51,8 @@ class InfoPage(Screen):
         if novel is None:
             Database.insert_novel(self.db.conn, self.novel.url, self.novel.title, self.novel.thumbnail)
             Database.insert_meta(self.db.conn, self.novel.url, self.novel.meta)
+            for chapter in self.novel.chapters:
+                Database.insert_chapter(self.db.conn, self.novel.url, chapter)
             self.db.commit()
 
             # download thumbnail
@@ -84,8 +86,21 @@ class InfoPage(Screen):
         # fetch from database
         dbnovel = Database.select_novel(self.db.conn, url)
         dbmetas = Database.select_meta(self.db.conn, url)
+        dbchapters = Database.select_chapter(self.db.conn, url)
+
         novel = None
         if dbnovel is not None and dbmetas is not None:      
+            chapter_list = []
+            for chapter in dbchapters:
+                chapter_list.append(
+                    Chapter(
+                        id=chapter["chapter_id"],
+                        title=chapter["title"],
+                        url=chapter["url"],
+                        content=chapter["content"],
+                    )
+                )
+
             novel = Novel(
                 id=dbnovel["id"],
                 title=dbnovel["title"],
@@ -98,7 +113,8 @@ class InfoPage(Screen):
                     release_date=dbmetas["release_date"],
                     status=identify_status(dbmetas["status"]),
                     description=dbmetas["description"]
-                )
+                ),
+                chapters=chapter_list
             )
         else:
         # fetch from web
