@@ -38,10 +38,10 @@ class LibraryPage(Screen):
                     novel["thumbnail"].split("/")[-1]
                 ).absolute()
 
-                if not thumbnail_path.exists():
-                    session = requests.Session()
-                    download_thumbnail(session, novel["thumbnail"])
-                    session.close()
+
+                session = requests.Session()
+                download_thumbnail(session, novel["thumbnail"])
+                session.close()
 
                 self.novellist.data.append({
                     "url": novel["url"],
