@@ -92,11 +92,11 @@ class InfoPage(Screen):
                 url=dbnovel["url"],
                 thumbnail=dbnovel["thumbnail"],
                 meta=Meta(
-                    authors=[i for i in dbmetas["authors"]],
-                    genres=[i for i in dbmetas["genres"]],
+                    authors=[i.strip() for i in dbmetas["authors"].split(",")],
+                    genres=[i.strip() for i in dbmetas["genres"].split(",")],
                     rating=float(dbmetas["rating"]),
                     release_date=dbmetas["release_date"],
-                    status=identify_parser(dbmetas["status"]),
+                    status=identify_status(dbmetas["status"]),
                     description=dbmetas["description"]
                 )
             )
