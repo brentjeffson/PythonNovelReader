@@ -31,8 +31,16 @@ class SearchPage(Screen):
             "action": "wp-manga-search-manga",
             "title": self.search_input.text
         }
-        resp = session.post("https://boxnovel.com/wp-admin/admin-ajax.php", data=payload)
-        self.update_search_list(resp.json()["data"])
+
+        for i in range(3):
+            try:
+                resp = session.post("https://boxnovel.com/wp-admin/admin-ajax.php", data=payload)
+                self.update_search_list(resp.json()["data"])
+                break
+            except requests.exceptions.ConnectionError as ex:
+                plog(["retry"], i+1)
+
+        
 
     def update_search_list(self, novels: {}):
         for item in novels:
@@ -42,8 +50,8 @@ class SearchPage(Screen):
         plog(['searching'], self.search_input.text)
         self.search_list_recycle.data = []
         with requests.Session() as session:
-            Clock.schedule_once(partial(self.fetch_novels, session), 0)
-
+            Clock.schedule_once(partial(self.fetch_novels, session), 0)           
+        
 class SearchItem(Button):
     url = StringProperty()
 
