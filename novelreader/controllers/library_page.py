@@ -9,8 +9,10 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from pathlib import Path
+from novelreader.services.ndownloader import download_thumbnail
 from novelreader.helpers import plog
 from novelreader.models import Database
+import requests
 
 
 Builder.load_file(str(Path('novelreader/views/library_page.kv').absolute()))
@@ -35,6 +37,11 @@ class LibraryPage(Screen):
                     "novelreader", "public", "imgs",
                     novel["thumbnail"].split("/")[-1]
                 ).absolute()
+
+                if not thumbnail_path.exists():
+                    session = requests.Session()
+                    download_thumbnail(session, novel["thumbnail"])
+                    session.close()
 
                 self.novellist.data.append({
                     "url": novel["url"],
