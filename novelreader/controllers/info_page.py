@@ -120,6 +120,15 @@ class InfoPage(Screen):
             dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
             self.chapter_list.data = dict_chapters
 
+            thumbnail_path = Path(
+                "novelreader", 
+                "public", 
+                "imgs", 
+                novel.thumbnail.split("/")[-1]
+            ).absolute()
+            if thumbnail_path.exists():
+                self.ids.thumbnail.source = str(thumbnail_path)
+
 class ChapterItem(Button):
     """Chapter list item"""
     url = StringProperty()
