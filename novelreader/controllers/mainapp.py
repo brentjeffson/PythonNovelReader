@@ -22,6 +22,9 @@ class MainApp(App):
         Database.create_chapters_table(db.conn)
         Database.create_metas_table(db.conn)
 
+        # intialize library page content
+        self.root.get_screen("library_page").on_start(db)
+        
     def check_resize(self, instance, x, y):
         # resize X
         print(Window.size)
