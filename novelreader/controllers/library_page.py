@@ -31,10 +31,15 @@ class LibraryPage(Screen):
         novels = Database.select_novels(db.conn)
         if len(novels) > 0:
             for novel in novels:
+                thumbnail_path = Path(
+                    "novelreader", "public", "imgs",
+                    novel["thumbnail"].split("/")[-1]
+                ).absolute()
+
                 self.novellist.data.append({
                     "url": novel["url"],
                     "title": novel["title"],
-                    "thumbnail": novel["thumbnail"]
+                    "thumbnail": str(thumbnail_path)
                 })
             plog(["loaded"], 'novels')
 
