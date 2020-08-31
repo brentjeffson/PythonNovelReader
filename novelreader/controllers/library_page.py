@@ -9,6 +9,8 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from pathlib import Path
+from novelreader.helpers import plog
+from novelreader.models import Database
 
 
 Builder.load_file(str(Path('novelreader/views/library_page.kv').absolute()))
@@ -21,6 +23,12 @@ class LibraryPage(Screen):
     def __init__(self, **kwargs):
         super(LibraryPage, self).__init__(**kwargs)
         # self.__selected_novel = None
+    
+    def on_start(self, db):
+        plog(["on start"], "library_page")
+        novel_rows = Database.select_novels(db.conn)
+        for novel in novel_rows:
+            print(novel_rows)
     
     # @property
     # def selected_novel(self):
