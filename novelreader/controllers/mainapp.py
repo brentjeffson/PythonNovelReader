@@ -14,6 +14,14 @@ class MainApp(App):
         return pages_manager
 
     def on_start(self):
+        # create database instance
+        db = Database(Path("novelreader", "public", "novels.db"))
+
+        # create tables
+        Database.create_novels_table(db.conn)
+        Database.create_chapters_table(db.conn)
+        Database.create_metas_table(db.conn)
+
     def check_resize(self, instance, x, y):
         # resize X
         print(Window.size)
