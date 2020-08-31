@@ -101,7 +101,7 @@ class Database:
             ", ".join(meta["authors"]),
             ", ".join(meta["genres"]),
             meta["rating"],
-            meta["status"],
+            meta["status"].name,
             meta["release_date"],
             meta["description"],
             novel_url
