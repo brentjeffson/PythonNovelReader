@@ -4,9 +4,9 @@ from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
-from wescrape.parsers.helpers import identify_parser
+from wescrape.helpers import identify_parser
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
-from wescrape.models.novel import Novel, Meta, Website
+from wescrape.models.novel import Novel, Meta, Website, Status
 from novelreader.models import Database
 from novelreader.helpers import plog
 from novelreader.services.ndownloader import (download_thumbnail, fetch_markup, parse_markup, 
@@ -86,6 +86,14 @@ class InfoPage(Screen):
         dbmetas = Database.select_meta(self.db.conn, url)
         novel = None
         if dbnovel is not None and dbmetas is not None:
+            status = dbmetas["status"].copy()
+            if status == Status.Ongoing.name.lower():
+                status = Status.Ongoing
+            elif status == Status.Completed.name.lower():
+                status = Status.Completed
+            else:
+                status = 
+
             novel = Novel(
                 id=dbnovel["id"],
                 title=dbnovel["title"],
