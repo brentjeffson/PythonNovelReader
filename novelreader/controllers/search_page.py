@@ -8,7 +8,7 @@ from wescrape.models.novel import Website
 from wescrape.parsers.helpers import identify_parser
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from novelreader.services.ndownloader import (fetch_markup, parse_markup, get_novel)
-from . import plog
+from novelreader.helpers import plog
 from pathlib import Path
 from functools import partial
 import requests
