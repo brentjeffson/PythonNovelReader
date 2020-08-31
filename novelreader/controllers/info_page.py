@@ -110,6 +110,7 @@ class InfoPage(Screen):
             self.genres.value = ', '.join(novel.meta.genres)
             self.status.value = novel.meta.status.name
             self.release_date.value = novel.meta.release_date
+            self.rating.value = str(novel.meta.rating)
             dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
             self.chapter_list.data = dict_chapters
 
