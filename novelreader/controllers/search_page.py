@@ -23,17 +23,8 @@ class SearchPage(Screen):
         super(SearchPage, self).__init__(**kwargs)
 
     def goto_info_page(self, url, _):        
-        info_page = self.manager.get_screen("info_page")
-        info_page.ids.chapter_list.data.clear()
-
-        with requests.Session() as session:
-            parser = identify_parser(url)
-            if parser is not None:
-                markup, status_code = fetch_markup(session, url)
-                soup = parse_markup(markup)
-                novel = get_novel(url, soup, parser)
-                info_page.update_widgets(novel)
-                self.manager.current = "info_page"
+        self.manager.get_screen("info_page").update_widgets(url)
+        self.manager.current = "info_page"
 
     def fetch_novels(self, session, _):
         payload = {
