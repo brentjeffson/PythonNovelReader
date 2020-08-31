@@ -35,13 +35,6 @@ def get_loop():
         IO_LOOP = asyncio.get_event_loop()
     return IO_LOOP
 
-
-def plog(title, msg=''):
-    title = ''.join([f"[{i.upper()}]" for i in title])
-    print(f'{title} {str(msg)}')
-
-
-
 # load all design files
 # for path in Path('../views').glob('*.kv'):
 #     plog(['KV'], path)
