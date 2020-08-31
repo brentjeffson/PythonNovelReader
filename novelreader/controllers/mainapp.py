@@ -12,7 +12,8 @@ class MainApp(App):
     def build(self):
         Window.bind(on_resize=self.check_resize)
         return pages_manager
-        
+
+    def on_start(self):
     def check_resize(self, instance, x, y):
         # resize X
         print(Window.size)
