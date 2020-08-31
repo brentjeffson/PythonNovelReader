@@ -2,7 +2,8 @@ from kivy.app import App, Builder
 from kivy.core.window import Window
 from novelreader.controllers.pages import PageManager
 from kivy.config import Config
-from . import Path
+from pathlib import Path
+from novelreader.models import Database
 
 Window.size = (840, 640)
 pages_manager = Builder.load_file(str(Path("novelreader/views/pages.kv").absolute()))
