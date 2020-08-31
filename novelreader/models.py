@@ -156,24 +156,30 @@ class Database:
 
     @staticmethod
     def select_novels(conn):
-        return Database.__select(conn, [], "novels")
+        cur = Database.__select(conn, [], "novels")
+        return cur.fetchall()
 
     @staticmethod
     def select_novel(conn, novel_url):
-        return Database.__select(conn, [], "novels", ["url"], (novel_url,))
+        cur = Database.__select(conn, [], "novels", ["url"], (novel_url,))
+        return cur.fetchone()
 
     @staticmethod
     def select_chapters(conn):
-        return Database.__select(conn, [], "chapters")
+        cur = Database.__select(conn, [], "chapters")
+        return cur.fetchall() 
 
     @staticmethod
     def select_chapter(conn, novel_url):
-        return Database.__select(conn, [], "chapters", ["novel_url"], (novel_url,))
+        cur = Database.__select(conn, [], "chapters", ["novel_url"], (novel_url,))
+        return cur.fetchone()
 
     @staticmethod
     def select_metas(conn):
-        return Database.__select(conn, [], "metas")
+        cur = Database.__select(conn, [], "metas")
+        return cur.fetchall()
 
     @staticmethod
     def select_meta(conn, novel_url):
-        return Database.__select(conn, [], "metas", ["novel_url"], (novel_url,))
+        cur = Database.__select(conn, [], "metas", ["novel_url"], (novel_url,))
+        return cur.fetchone()
