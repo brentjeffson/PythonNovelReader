@@ -49,7 +49,7 @@ class InfoPage(Screen):
         novel = Database.select_novel(self.db.conn, self.novel.url)
 
         if novel is None:
-            Database.insert_novel(self.db.conn, self.novel.url, self.novel.title)
+            Database.insert_novel(self.db.conn, self.novel.url, self.novel.title, self.novel.thumbnail)
             Database.insert_meta(self.db.conn, self.novel.url, self.novel.meta)
             self.db.commit()
             
