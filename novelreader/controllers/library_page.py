@@ -15,7 +15,6 @@ from novelreader.models import Database
 
 Builder.load_file(str(Path('novelreader/views/library_page.kv').absolute()))
 
-# todo library page
 class LibraryPage(Screen):
     novellist = ObjectProperty(None)
     bottom_controls = ObjectProperty(None)
@@ -33,9 +32,9 @@ class LibraryPage(Screen):
         if len(novels) > 0:
             for novel in novels:
                 self.novellist.data.append({
-                    "url": novel[1],
-                    "title": novel[2],
-                    "thumbnail": novel[3]
+                    "url": novel["url"],
+                    "title": novel["title"],
+                    "thumbnail": novel["thumbnail"]
                 })
             plog(["loaded"], 'novels')
 
@@ -46,7 +45,6 @@ class LibraryPage(Screen):
         print(dir(self.manager.get_screen('info_page')))
         self.manager.get_screen('info_page').update_content(novel["url"])
         self.manager.current = 'info_page'
-
 
 # recyclerview
 class NovelList(RecycleView):
