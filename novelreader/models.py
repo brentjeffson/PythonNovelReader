@@ -20,6 +20,9 @@ class Database:
     def __init__(self, db_file):
         self.__conn = sql.connect(db_file)
 
+    def commit(self):
+        self.__conn.commit()
+
     @classmethod
     def get_instance(cls):
         if cls.INSTANCE is not None:
