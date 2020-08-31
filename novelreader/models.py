@@ -51,7 +51,7 @@ class Database:
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             URL TEXT UNIQUE NOT NULL,
             TITLE TEXT NOT NULL,
-            THUMBNAIL TEXT NOT NULL,);
+            THUMBNAIL TEXT NOT NULL);
         """
         conn.execute(statement)
 
