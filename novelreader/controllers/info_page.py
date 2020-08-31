@@ -97,7 +97,7 @@ class InfoPage(Screen):
                     rating=float(dbmetas["rating"]),
                     release_date=dbmetas["release_date"],
                     status=dbmetas["status"],
-                    description=dmetas["description"]
+                    description=dbmetas["description"]
                 )
             )
         else:
