@@ -1,9 +1,15 @@
-from . import Builder, Screen
-from . import ObjectProperty, StringProperty, BooleanProperty
-from . import RecycleView, RecycleGridLayout
-from . import RecycleDataViewBehavior, FocusBehavior, LayoutSelectionBehavior
-from . import GridLayout, BoxLayout
-from . import Path
+from kivy.app import Builder
+from kivy.properties import ObjectProperty, StringProperty, BooleanProperty
+from kivy.uix.screenmanager import Screen
+from kivy.uix.recycleview import RecycleView
+from kivy.uix.recyclegridlayout import RecycleGridLayout
+from kivy.uix.recycleview.views import RecycleDataViewBehavior
+from kivy.uix.recycleview.layout import LayoutSelectionBehavior
+from kivy.uix.behaviors import FocusBehavior
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
+from pathlib import Path
+
 
 Builder.load_file(str(Path('novelreader/views/library_page.kv').absolute()))
 
