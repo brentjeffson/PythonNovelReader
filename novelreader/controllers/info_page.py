@@ -81,17 +81,17 @@ class InfoPage(Screen):
         novel = None
         if dbnovel is not None and dbmetas is not None:
             novel = Novel(
-                dbnovel[0],
-                dbnovel[1],
-                dbnovel[2],
-                dbnovel[3],
+                id=dbnovel["id"],
+                title=dbnovel["title"],
+                url=dbnovel["url"],
+                thumbnail=dbnovel["thumbnail"],
                 meta=Meta(
-                    [i for i in dbmetas[1]],
-                    [i for i in dbmetas[2]],
-                    float(dbmetas[3]),
-                    dbmetas[4],
-                    dbmetas[5],
-                    dbmetas[6]
+                    authors=[i for i in dbmetas["authors"]],
+                    genres=[i for i in dbmetas["genres"]],
+                    rating=float(dbmetas["rating"]),
+                    release_date=dbmetas["release_date"],
+                    status=dbmetas["status"],
+                    description=bmetas["description"]
                 )
             )
         else:
