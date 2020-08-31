@@ -44,7 +44,7 @@ class LibraryPage(Screen):
     
     def goto_info_page(self, novel):
         print(dir(self.manager.get_screen('info_page')))
-        self.manager.get_screen('info_page').novel = novel
+        self.manager.get_screen('info_page').update_content(novel["url"])
         self.manager.current = 'info_page'
 
 
