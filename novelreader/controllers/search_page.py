@@ -32,7 +32,6 @@ class SearchPage(Screen):
             "title": self.search_input.text
         }
         resp = session.post("https://boxnovel.com/wp-admin/admin-ajax.php", data=payload)
-        print(resp.json())
         self.update_search_list(resp.json()["data"])
 
     def update_search_list(self, novels: {}):
