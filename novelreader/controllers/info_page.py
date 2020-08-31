@@ -9,7 +9,8 @@ from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from wescrape.models.novel import Novel, Meta, Website
 from novelreader.models import Database
 from novelreader.helpers import plog
-from novelreader.services.ndownloader import (fetch_markup, parse_markup, get_content)
+from novelreader.services.ndownloader import (fetch_markup, parse_markup, 
+get_content, get_novel)
 from pathlib import Path
 from functools import partial
 import requests
