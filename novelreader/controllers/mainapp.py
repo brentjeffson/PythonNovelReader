@@ -4,6 +4,7 @@ from novelreader.controllers.pages import PageManager
 from kivy.config import Config
 from pathlib import Path
 from novelreader.models import Database
+import sqlite3 as sql
 
 Window.size = (840, 640)
 pages_manager = Builder.load_file(str(Path("novelreader/views/pages.kv").absolute()))
@@ -17,6 +18,7 @@ class MainApp(App):
     def on_start(self):
         # create database instance
         db = Database(Path("novelreader", "public", "novels.db"))
+        db.conn.row_factory = sql.Row
 
         # create tables
         Database.create_novels_table(db.conn)
