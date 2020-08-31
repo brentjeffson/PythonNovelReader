@@ -39,8 +39,8 @@ class InfoPage(Screen):
         )
     ))
     
-    def __init__(self, **kwargs):
-        super(InfoPage, self).__init__(**kwargs)
+    def on_start(self, db):
+        self.db = db
 
     def add_to_library(self):
         """Add Current Instance Of Novel To Database"""
