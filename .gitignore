@@ -1,3 +1,6 @@
 __pycache__
 tests
 .vscode
+novelreader/public/novel.db
+
+test.db
