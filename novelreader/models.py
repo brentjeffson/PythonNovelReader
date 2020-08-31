@@ -50,7 +50,8 @@ class Database:
         statement = """CREATE TABLE IF NOT EXISTS NOVELS(
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             URL TEXT UNIQUE NOT NULL,
-            TITLE TEXT NOT NULL);
+            TITLE TEXT NOT NULL,
+            THUMBNAIL TEXT NOT NULL,);
         """
         conn.execute(statement)
 
