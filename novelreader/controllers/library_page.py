@@ -26,34 +26,31 @@ class LibraryPage(Screen):
     
     def on_start(self, db):
         plog(["on start"], "library_page")
-        novel_rows = Database.select_novels(db.conn)
-        for novel in novel_rows:
-            print(novel_rows)
-    
-    # @property
-    # def selected_novel(self):
-    #     return self.__selected_novel
+        self.db = db
+
+        # load saved novels in database
+        novels = Database.select_novels(db.conn)
+        if len(novels) > 0:
+            for novel in novels:
+                self.novellist.data.append({
+                    "url": novel[1],
+                    "title": novel[2],
+                    "thumbnail": novel[3]
+                })
+            plog(["loaded"], 'novels')
+
     def get_selected_novel(self):
         return self.selected_novel
     
     def goto_info_page(self, novel):
         print(dir(self.manager.get_screen('info_page')))
         self.manager.get_screen('info_page').novel = novel
-        # self.manager.get_screen('info_page').title = novel['title']
         self.manager.current = 'info_page'
 
 
 # recyclerview
 class NovelList(RecycleView):
     novellist = ObjectProperty(None)
-
-    def __init__(self, **kwargs):
-        super(NovelList, self).__init__(**kwargs)
-        # self.data = [{} for i in range(12)]
-        self.data = [{
-            'title': 'The First Order',
-            'thumbnail': str(Path('novelreader/public/imgs/cultivation-chat-group.jpg').absolute())
-        }]
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
                                      RecycleGridLayout):
