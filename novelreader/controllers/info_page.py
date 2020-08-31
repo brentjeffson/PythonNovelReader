@@ -126,6 +126,11 @@ class InfoPage(Screen):
                 "imgs", 
                 novel.thumbnail.split("/")[-1]
             ).absolute()
+            # download thumbnail
+            session = requests.Session()
+            if download_thumbnail(session, self.novel.thumbnail):
+                plog(["downloaded"], 'thumnbail')
+            session.close()
             if thumbnail_path.exists():
                 self.ids.thumbnail.source = str(thumbnail_path)
 
