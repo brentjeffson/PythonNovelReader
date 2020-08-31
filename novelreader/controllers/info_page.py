@@ -9,7 +9,7 @@ from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from wescrape.models.novel import Novel, Meta, Website
 from novelreader.models import Database
 from novelreader.helpers import plog
-from novelreader.services.ndownloader import (fetch_markup, parse_markup, 
+from novelreader.services.ndownloader import (download_thumbnail, fetch_markup, parse_markup, 
 get_content, get_novel)
 from pathlib import Path
 from functools import partial
@@ -52,8 +52,14 @@ class InfoPage(Screen):
             Database.insert_novel(self.db.conn, self.novel.url, self.novel.title, self.novel.thumbnail)
             Database.insert_meta(self.db.conn, self.novel.url, self.novel.meta)
             self.db.commit()
+
+            # download thumbnail
+            session = requests.Session()
+            if download_thumbnail(session, self.novel.thumbnail):
+                plog(["downloaded"], 'thumnbail')
+            session.close()
             
-            plog(["add to library"], self.title.text)
+            plog(["added to library"], self.title.text)
         else:
             plog(["in library"], self.title.text)
 
