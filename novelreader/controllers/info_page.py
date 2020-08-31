@@ -4,7 +4,7 @@ from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
-from wescrape.helpers import identify_parser
+from wescrape.helpers import identify_parser, identify_status
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from wescrape.models.novel import Novel, Meta, Website, Status
 from novelreader.models import Database
@@ -85,15 +85,7 @@ class InfoPage(Screen):
         dbnovel = Database.select_novel(self.db.conn, url)
         dbmetas = Database.select_meta(self.db.conn, url)
         novel = None
-        if dbnovel is not None and dbmetas is not None:
-            status = dbmetas["status"].copy()
-            if status == Status.Ongoing.name.lower():
-                status = Status.Ongoing
-            elif status == Status.Completed.name.lower():
-                status = Status.Completed
-            else:
-                status = 
-
+        if dbnovel is not None and dbmetas is not None:      
             novel = Novel(
                 id=dbnovel["id"],
                 title=dbnovel["title"],
@@ -104,7 +96,7 @@ class InfoPage(Screen):
                     genres=[i for i in dbmetas["genres"]],
                     rating=float(dbmetas["rating"]),
                     release_date=dbmetas["release_date"],
-                    status=dbmetas["status"],
+                    status=identify_parser(dbmetas["status"]),
                     description=dbmetas["description"]
                 )
             )
