@@ -11,8 +11,9 @@ from novelreader.services.ndownloader import (fetch_markup, parse_markup, get_co
 from pathlib import Path
 from novelreader.helpers import plog
 from functools import partial
+from novelreader.models import Database
 import requests
-import sqlite3 as sql
+
 
 
 Builder.load_file(str(Path('novelreader/views/info_page.kv').absolute()))
@@ -44,36 +45,16 @@ class InfoPage(Screen):
 
     def add_to_library(self):
         """Add Current Instance Of Novel To Database"""
-        conn = sql.connect(Path("novelreader", "public", "novel.db").absolute())
-        # cur = conn.cursor()
-        
-        rows = conn.execute("""SELECT URL FROM NOVELS WHERE URL == ?""", (self.novel.url,))
+        novel = Database.select_novel(self.db.conn, self.novel.url)
 
-        if len(rows.fetchall()) == 0:
-            conn.execute("""INSERT INTO NOVELS(URL, TITLE) VALUES(?, ?)""", (self.novel.url, self.novel.title))
-            conn.execute("""INSERT INTO METAS(
-                NOVEL_URL, 
-                AUTHORS, 
-                GENRES, 
-                RATING, 
-                RELEASE_DATE, 
-                STATUS, 
-                DESCRIPTION) VALUES(?, ?, ?, ?, ?, ?, ?)""", 
-                (
-                    self.novel.url, 
-                    ", ".join(self.novel.meta.authors),
-                    ", ".join(self.novel.meta.genres),
-                    self.novel.meta.rating,
-                    self.novel.meta.release_date,
-                    self.novel.meta.status.name,
-                    self.novel.meta.description
-                )
-            )
+        if novel is None:
+            Database.insert_novel(self.db.conn, self.novel.url, self.novel.title)
+            Database.insert_meta(self.db.conn, self.novel.url, self.novel.meta)
+            self.db.commit()
+            
             plog(["add to library"], self.title.text)
         else:
             plog(["in library"], self.title.text)
-        conn.commit()
-        conn.close()
 
 
     def prep_content(self, url):
