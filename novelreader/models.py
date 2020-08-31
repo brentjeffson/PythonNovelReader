@@ -88,7 +88,7 @@ class Database:
     # insert functions
     @staticmethod
     def insert_novel(conn, url: str, title: str, thumbnail: str):
-        statement = """INSERT INTO NOVELS (URL, TITLE) VALUES (?, ?, ?);"""
+        statement = """INSERT INTO NOVELS (URL, TITLE, THUMBNAIL) VALUES (?, ?, ?);"""
         conn.execute(statement, (url, title, thumbnail))
 
     @staticmethod
