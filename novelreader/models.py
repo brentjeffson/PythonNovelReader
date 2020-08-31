@@ -91,7 +91,11 @@ class Database:
 
     @staticmethod
     def insert_meta(conn, novel_url: str, meta: Meta):
-        statement = """INSERT INTO METAS (AUTHORS, GENRES, RATING, STATUS, RELEASE_DATE, DESCRIPTION, NOVEL_URL) VALUES (?, ?, ?, ?, ?, ?, ?);"""
+        statement = """INSERT INTO 
+        METAS (
+            AUTHORS, GENRES, RATING, STATUS, RELEASE_DATE, DESCRIPTION, NOVEL_URL
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?);"""
         if type(meta) == Meta:
             meta = meta.__dict__
             
