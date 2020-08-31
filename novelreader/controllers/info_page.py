@@ -7,11 +7,11 @@ from kivy.uix.button import Button
 from wescrape.parsers.helpers import identify_parser
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from wescrape.models.novel import Novel, Meta, Website
+from novelreader.models import Database
+from novelreader.helpers import plog
 from novelreader.services.ndownloader import (fetch_markup, parse_markup, get_content)
 from pathlib import Path
-from novelreader.helpers import plog
 from functools import partial
-from novelreader.models import Database
 import requests
 
 
@@ -56,7 +56,6 @@ class InfoPage(Screen):
         else:
             plog(["in library"], self.title.text)
 
-
     def prep_content(self, url):
         # todo fetch novel from database
         # if None; fetch from web
@@ -74,15 +73,44 @@ class InfoPage(Screen):
             reader_page.update_content(content)
             self.manager.current = "reader_page"
     
-    def update_widgets(self, novel):
-        self.novel = novel
-        self.title.text = novel.title
-        self.authors.value = ', '.join(novel.meta.authors)
-        self.genres.value = ', '.join(novel.meta.genres)
-        self.status.value = novel.meta.status.name
-        self.release_date.value = novel.meta.release_date
-        dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
-        self.chapter_list.data = dict_chapters
+    def update_widgets(self, url):
+        # fetch from database
+        dbnovel = Database.select_novel(self.db.conn, url)
+        dbmetas = Database.select_meta(self.db.conn, url)
+        novel = None
+        if dbnovel is not None and dbmetas is not None:
+            novel = Novel(
+                dbnovel[0],
+                dbnovel[1],
+                dbnovel[2],
+                dbnovel[3],
+                meta=Meta(
+                    [i for i in dbmetas[1]],
+                    [i for i in dbmetas[2]],
+                    float(dbmetas[3]),
+                    dbmetas[4],
+                    dbmetas[5],
+                    dbmetas[6]
+                )
+            )
+        else:
+        # fetch from web
+            with requests.Session() as session:
+                parser = identify_parser(url)
+                if parser is not None:
+                    markup, status_code = fetch_markup(session, url)
+                    soup = parse_markup(markup)
+                    novel = get_novel(url, soup, parser)
+                    
+        if novel is not None:
+            self.novel = novel
+            self.title.text = novel.title
+            self.authors.value = ', '.join(novel.meta.authors)
+            self.genres.value = ', '.join(novel.meta.genres)
+            self.status.value = novel.meta.status.name
+            self.release_date.value = novel.meta.release_date
+            dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
+            self.chapter_list.data = dict_chapters
 
 class ChapterItem(Button):
     """Chapter list item"""
