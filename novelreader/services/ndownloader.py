@@ -2,6 +2,18 @@ import requests
 from wescrape.models.novel import Novel
 from wescrape.parsers.nparse import NovelBaseParser
 from bs4 import BeautifulSoup
+from pathlib import Path
+
+def download_thumbnail(session: requests.Session, url: str) -> bool:
+    filename = url.split("/")[-1]
+    img_path = Path("novelreader", "public", "imgs", filename).absolute()
+    if not img_path.exists:
+        resp = session.get(url)
+        if resp.ok:
+            img_path.write_bytes(resp.content)
+            return True
+    return False
+
 
 def fetch_markup(session: requests.Session, url: str) -> str:
     """Fetch markup of `URL` from web."""
