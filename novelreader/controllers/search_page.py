@@ -5,7 +5,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from wescrape.models.novel import Website
-from wescrape.parsers.helpers import identify_parser
+from wescrape.helpers import identify_parser
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from novelreader.services.ndownloader import (fetch_markup, parse_markup, get_novel)
 from novelreader.helpers import plog
