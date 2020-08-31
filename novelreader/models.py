@@ -48,8 +48,7 @@ class Database:
     @staticmethod
     def create_novels_table(conn):
         statement = """CREATE TABLE IF NOT EXISTS NOVELS(
-            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            URL TEXT UNIQUE NOT NULL,
+            URL TEXT PRIMARY KEY,
             TITLE TEXT NOT NULL,
             THUMBNAIL TEXT NOT NULL);
         """
@@ -58,12 +57,11 @@ class Database:
     @staticmethod
     def create_chapters_table(conn):
         statement = """CREATE TABLE IF NOT EXISTS CHAPTERS(
-            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            CHAPTER_ID REAL NOT NULL,
-            URL TEXT UNIQUE NOT NULL,
+            URL TEXT PRIMARY KEY,
+            CHAPTER_ID TEXT NOT NULL,
             TITLE TEXT NOT NULL,
             CONTENT TEXT,
-            NOVEL_URL TEXT UNIQUE NOT NULL,
+            NOVEL_URL TEXT NOT NULL,
             FOREIGN KEY (NOVEL_URL)
                 REFERENCES NOVELS (URL));
         """
