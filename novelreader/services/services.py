@@ -5,6 +5,14 @@ from wescrape.models.novel import Novel, Chapter, Meta
 
 class Services:
 
+    INTANCE = None
+
+    @classmethod
+    def build(cls, session: requests.Session):
+        if cls.INTANCE is None:
+            cls.INTANCE = Services(session)
+        return cls.INTANCE
+
     def __init__(self, session: requests.Session):
         self.__session = session
 
