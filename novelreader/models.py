@@ -144,7 +144,7 @@ class Database:
     def __select(self, cols: list, table: str, where: list = None, where_val: tuple = ()):
         if len(cols) == 0:
             cols = ["*"]
-
+        # ([], "novels", ["url"], (novel_url,))
         statement = f"SELECT {' '.join(cols)} FROM {table};"
 
         if where is not None and type(where) == list and len(where_val) > 0 and type(where_val) == tuple:
@@ -193,38 +193,38 @@ class Database:
         return converted_rows
 
     def select_novels(self) -> [Novel]:
-        cur = Database.__select(self.__conn, [], "novels")
+        cur = self.__select([], "novels")
         novel_rows = cur.fetchall()
         novels = self.__convert_rows(novel_rows, Novel)
         return novels
 
 
     def select_novel(self, novel_url) -> Novel:
-        cur = Database.__select(self.__conn, [], "novels", ["url"], (novel_url,))
+        cur = self.__select([], "novels", ["url"], (novel_url,))
         novel_row = cur.fetchone()
         novel = self.__convert_row(novel_row, Novel)
         return novel
 
     def select_chapters(self) -> [Chapter]:
-        cur = Database.__select(self.__conn, [], "chapters")
+        cur = self.__select([], "chapters")
         chapter_rows = cur.fetchall()
         chapters = self.__convert_rows(chapter_rows, Chapter)
         return chapters
 
     def select_chapter(self, novel_url) -> Chapter:
-        cur = Database.__select(self.__conn, [], "chapters", ["novel_url"], (novel_url,))
+        cur = self.__select([], "chapters", ["novel_url"], (novel_url,))
         chapter_row = cur.fetchone()
         chapter = self.__convert_row(chapter_row, Chapter)
         return chapter
 
     def select_metas(self) -> [Meta]:
-        cur = Database.__select(self.__conn, [], "metas")
+        cur = self.__select([], "metas")
         meta_rows = cur.fetchall()
         metas = self.__convert_rows(meta_rows, Meta)
         return metas
 
     def select_meta(self, novel_url) -> Meta:
-        cur = Database.__select(self.__conn, [], "metas", ["novel_url"], (novel_url,))
+        cur = self.__select([], "metas", ["novel_url"], (novel_url,))
         meta_row = cur.fetchone()
         meta = self.__convert_row(meta_row, Meta)
         return meta
