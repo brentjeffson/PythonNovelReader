@@ -24,7 +24,7 @@ class Database:
         self.__conn.commit()
 
     @classmethod
-    def get_instance(cls):
+    def instance(cls):
         if cls.INSTANCE is not None:
             return cls.INSTANCE
         else:
@@ -45,17 +45,15 @@ class Database:
         return self.__conn
         
     # create functions
-    @staticmethod
-    def create_novels_table(conn):
+    def create_novels_table(self):
         statement = """CREATE TABLE IF NOT EXISTS NOVELS(
             URL TEXT PRIMARY KEY,
             TITLE TEXT NOT NULL,
             THUMBNAIL TEXT NOT NULL);
         """
-        conn.execute(statement)
+        self.__conn.execute(statement)
 
-    @staticmethod
-    def create_chapters_table(conn):
+    def create_chapters_table(self):
         statement = """CREATE TABLE IF NOT EXISTS CHAPTERS(
             URL TEXT PRIMARY KEY,
             CHAPTER_ID TEXT NOT NULL,
@@ -65,10 +63,9 @@ class Database:
             FOREIGN KEY (NOVEL_URL)
                 REFERENCES NOVELS (URL));
         """
-        conn.execute(statement)
+        self.__conn.execute(statement)
 
-    @staticmethod
-    def create_metas_table(conn):
+    def create_metas_table(self):
         statement = """CREATE TABLE IF NOT EXISTS METAS(
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             AUTHORS TEXT,
@@ -81,16 +78,14 @@ class Database:
             FOREIGN KEY (NOVEL_URL)
                 REFERENCES NOVELS (URL));
         """
-        conn.execute(statement)
+        self.__conn.execute(statement)
 
     # insert functions
-    @staticmethod
-    def insert_novel(conn, url: str, title: str, thumbnail: str):
+    def insert_novel(self, url: str, title: str, thumbnail: str):
         statement = """INSERT INTO NOVELS (URL, TITLE, THUMBNAIL) VALUES (?, ?, ?);"""
-        conn.execute(statement, (url, title, thumbnail))
+        self.__conn.execute(statement, (url, title, thumbnail))
 
-    @staticmethod
-    def insert_meta(conn, novel_url: str, meta: Meta):
+    def insert_meta(self, novel_url: str, meta: Meta):
         statement = """INSERT INTO 
         METAS (
             AUTHORS, GENRES, RATING, STATUS, RELEASE_DATE, DESCRIPTION, NOVEL_URL
@@ -108,10 +103,9 @@ class Database:
             meta["description"],
             novel_url
         )
-        conn.execute(statement, values)
+        self.__conn.execute(statement, values)
 
-    @staticmethod
-    def insert_chapter(conn, novel_url: str, chapter: Chapter):
+    def insert_chapter(self, novel_url: str, chapter: Chapter):
         statement = """INSERT INTO CHAPTERS (CHAPTER_ID, URL, TITLE, CONTENT, NOVEL_URL) VALUES(?, ?, ?, ?, ?);"""
         if type(chapter) == Chapter:
             chapter = chapter.__dict__
@@ -123,10 +117,9 @@ class Database:
             chapter["content"],
             novel_url
         )
-        conn.execute(statement, values)
+        self.__conn.execute(statement, values)
 
-    @staticmethod
-    def update_chapter(conn, novel_url: str, chapter: Chapter):
+    def update_chapter(self, novel_url: str, chapter: Chapter):
         statement = """UPDATE CHAPTERS 
         SET CHAPTER_ID = ?,
             URL = ?,
@@ -145,10 +138,9 @@ class Database:
             novel_url
         )
 
-        conn.execute(statement, values)
+        self.__conn.execute(statement, values)
 
-    @staticmethod
-    def __select(conn, cols: list, table: str, where: list = None, where_val: tuple = ()):
+    def __select(self, cols: list, table: str, where: list = None, where_val: tuple = ()):
         if len(cols) == 0:
             cols = ["*"]
 
@@ -158,34 +150,28 @@ class Database:
             statement = f"SELECT {' '.join(cols)} FROM {table} WHERE {' '.join( i + ' == ?' for i in where )};".upper()
             print(statement)
             
-        return conn.execute(statement, where_val)
+        return self.__conn.execute(statement, where_val)
 
-    @staticmethod
-    def select_novels(conn):
-        cur = Database.__select(conn, [], "novels")
+    def select_novels(self):
+        cur = Database.__select(self.__conn, [], "novels")
         return cur.fetchall()
 
-    @staticmethod
-    def select_novel(conn, novel_url):
-        cur = Database.__select(conn, [], "novels", ["url"], (novel_url,))
+    def select_novel(self, novel_url):
+        cur = Database.__select(self.__conn, [], "novels", ["url"], (novel_url,))
         return cur.fetchone()
 
-    @staticmethod
-    def select_chapters(conn):
-        cur = Database.__select(conn, [], "chapters")
+    def select_chapters(self):
+        cur = Database.__select(self.__conn, [], "chapters")
         return cur.fetchall() 
 
-    @staticmethod
-    def select_chapter(conn, novel_url):
-        cur = Database.__select(conn, [], "chapters", ["novel_url"], (novel_url,))
+    def select_chapter(self, novel_url):
+        cur = Database.__select(self.__conn, [], "chapters", ["novel_url"], (novel_url,))
         return cur.fetchone()
 
-    @staticmethod
-    def select_metas(conn):
-        cur = Database.__select(conn, [], "metas")
+    def select_metas(self):
+        cur = Database.__select(self.__conn, [], "metas")
         return cur.fetchall()
 
-    @staticmethod
-    def select_meta(conn, novel_url):
-        cur = Database.__select(conn, [], "metas", ["novel_url"], (novel_url,))
+    def select_meta(self, novel_url):
+        cur = Database.__select(self.__conn, [], "metas", ["novel_url"], (novel_url,))
         return cur.fetchone()
