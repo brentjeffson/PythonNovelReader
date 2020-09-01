@@ -2,6 +2,7 @@ import requests
 import sqlite3 as sql
 from novelreader.services import Services
 from novelreader.models import Database
+from novelreader.helpers import plog
 from wescrape.models.novel import Novel, Chapter, Meta
 
 
