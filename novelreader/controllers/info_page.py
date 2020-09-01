@@ -105,18 +105,8 @@ class InfoPage(Screen):
 
         plog(["# Of New Chapters"], num_new_chapter)
         
-
-    def fetch_chapters(self, session, url) -> [Chapter]:
-        """Fetch Chapters From Novel"""
-        markup, status_code = fetch_markup(session, url)
-        if markup is not None:
-            soup = parse_markup(markup)
-            chapters = get_chapters(soup)    
-            return chapters
-        return []
-        
     def read_chapter(self, url):
-        content = self.repository.get_content(url)
+        content = self.repository.get_chapter_content(url)
         self.manager.get_screen("reader_page").update_content(content)
         self.manager.current = "reader_page"
     
