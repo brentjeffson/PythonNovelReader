@@ -59,21 +59,6 @@ class InfoPage(Screen):
             )
             self.update_widgets(self.novel)
 
-    def update_widgets(self, novel: Novel):
-        """Update All Widgets"""
-        if novel:
-            self.ids.title.text = novel.title
-            self.ids.authors.value = ', '.join(novel.meta.authors)
-            self.ids.genres.value = ', '.join(novel.meta.genres)
-            self.ids.status.value = novel.meta.status.name
-            self.ids.release_date.value = novel.meta.release_date
-            self.ids.rating.value = str(novel.meta.rating)
-            dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
-            self.ids.chapter_list.data = dict_chapters
-
-            if thumbnail_path(novel.thumbnail).exists():
-                self.ids.thumbnail.source = str(thumbnail_path(novel.thumbnail))
-
     def add_to_library(self):
         """Add Current Instance Of Novel To Database"""
         novel = self.repository.get_novel(self.novel.url, offline=True)
@@ -90,6 +75,21 @@ class InfoPage(Screen):
     def download_work(self, url: str):
         with requests.Session() as session:
             download_thumbnail(session, url)
+
+    def update_widgets(self, novel: Novel):
+        """Update All Widgets"""
+        if novel:
+            self.ids.title.text = novel.title
+            self.ids.authors.value = ', '.join(novel.meta.authors)
+            self.ids.genres.value = ', '.join(novel.meta.genres)
+            self.ids.status.value = novel.meta.status.name
+            self.ids.release_date.value = novel.meta.release_date
+            self.ids.rating.value = str(novel.meta.rating)
+            dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
+            self.ids.chapter_list.data = dict_chapters
+
+            if thumbnail_path(novel.thumbnail).exists():
+                self.ids.thumbnail.source = str(thumbnail_path(novel.thumbnail))
 
     def update_chapters(self, url: str):
         """Update Chapters Of Novel"""
