@@ -57,7 +57,7 @@ class Repository:
             chapters = self.__database.select_chapters(url)
         return chapters
 
-    def get_meta():
+    def get_meta(self, url):
         # get from web
         meta = []
         try: 
@@ -70,6 +70,10 @@ class Repository:
             # get from database
             meta = self.__database.select_meta(url)
         return meta
+
+    def get_chapter_content(self, url: str) -> str:
+        content = self.__service.fetch_content(url)
+        return content
 
     def update_chapters(self, url: str):
         """Fetch chapters of novel from web, return updated chapters"""
