@@ -30,7 +30,7 @@ class Services:
         return chapters if chapters is not None else []
 
     def fetch_meta(self, url: str) -> Meta:
-        meta = self.__fetch(Meta, url):
+        meta = self.__fetch(Meta, url)
         return meta
         
     @staticmethod
