@@ -10,7 +10,7 @@ from wescrape.models.novel import Novel, Meta, Website, Status, Chapter
 from novelreader.models import Database
 from novelreader.helpers import plog
 from novelreader.services.ndownloader import (download_thumbnail, fetch_markup, parse_markup, 
-get_content, get_novel)
+get_content, get_novel, get_chapters)
 from pathlib import Path
 from functools import partial
 import requests
@@ -64,6 +64,56 @@ class InfoPage(Screen):
             plog(["added to library"], self.title.text)
         else:
             plog(["in library"], self.title.text)
+    
+    def update_chapters(self, url: str):
+        """Update Chapters Of Novel"""
+        # get saved chapters from database
+        saved_chapters = Database.select_novel_chapters(self.db.conn, url)
+        converted_saved_chapters = []
+        # convert to Chapter object
+        if len(saved_chapters) > 0:
+            for saved_chapter in saved_chapters:
+                converted_saved_chapters.append(Chapter(
+                    id=saved_chapter["chapter_id"],
+                    title=saved_chapter["title"],
+                    url=saved_chapter["url"],
+                    content=saved_chapter["content"]
+                ))
+            saved_chapters = converted_saved_chapters
+        # fetched chapters from web
+        new_chapters = []
+        with requests.Session() as session:
+            new_chapters = self.fetch_chapters(session, url)
+        # compare new chapters and saved chapters
+        if len(new_chapters) > 0 and len(saved_chapters) > 0:
+            num_new_chapter = 0
+            for new_chapter in new_chapters:
+                for saved_chapter in saved_chapters:
+                    # if new chapter is not in saved chapters
+                    if new_chapter.url != saved_chapter.url:
+                        # save new chapter to database
+                        with self.db.conn:
+                            Database.insert_chapter(self.db.conn, url, new_chapter)
+                            num_new_chapter += 1
+        elif len(new_chapters):
+            # no saved chapter for novel, save all new chapters
+            for new_chapter in new_chapters:
+                with self.db.conn:
+                    Database.insert_chapter(self.db.conn, url, new_chapter)
+                    num_new_chapter += 1
+                        
+        plog(["# Of New Chapters"], num_new_chapter)
+        
+
+    def fetch_chapters(self, session, url) -> [Chapter]:
+        """Fetch Chapters From Novel"""
+        markup, status_code = fetch_markup(session, url)
+        if markup is not None:
+            soup = parse_markup(markup)
+            chapters = get_chapters(soup)    
+            return chapters
+        return []
+        
 
     def prep_content(self, url):
         # todo fetch novel from database
@@ -83,6 +133,7 @@ class InfoPage(Screen):
             self.manager.current = "reader_page"
     
     def update_widgets(self, url):
+        """Update All Widgets"""
         # fetch from database
         dbnovel = Database.select_novel(self.db.conn, url)
         dbmetas = Database.select_meta(self.db.conn, url)
