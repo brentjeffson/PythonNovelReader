@@ -7,6 +7,7 @@ from kivy.uix.button import Button
 from wescrape.helpers import identify_parser, identify_status
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from wescrape.models.novel import Novel, Meta, Website, Status, Chapter
+from novelreader.repository import Repository
 from novelreader.models import Database
 from novelreader.helpers import plog
 from pathlib import Path
@@ -32,8 +33,89 @@ class InfoPage(Screen):
         )
     ))
     
-    def on_start(self, db):
-        self.db = db
+    def on_start(self, repository: Repository):
+        """Initialize Required Variables"""
+        self.repository = repository
+
+    def open(self, url):
+        """Opens Novel"""
+        # get required data to update variables
+        novel = self.repository.get_novel(url)
+        chapters = self.repository.get_chapters(url)
+        meta = self.repository.get_meta(url)
+        # update widgets
+        if novel:
+            self.update_widgets()
+
+
+    def update_widgets(self, url):
+        """Update All Widgets"""
+        # fetch from database
+        dbnovel = Database.select_novel(self.db.conn, url)
+        dbmetas = Database.select_meta(self.db.conn, url)
+        dbchapters = Database.select_chapter(self.db.conn, url)
+
+        novel = None
+        if dbnovel is not None and dbmetas is not None:      
+            chapter_list = []
+            for chapter in dbchapters:
+                chapter_list.append(
+                    Chapter(
+                        id=chapter["chapter_id"],
+                        title=chapter["title"],
+                        url=chapter["url"],
+                        content=chapter["content"],
+                    )
+                )
+
+            novel = Novel(
+                id=dbnovel["id"],
+                title=dbnovel["title"],
+                url=dbnovel["url"],
+                thumbnail=dbnovel["thumbnail"],
+                meta=Meta(
+                    authors=[i.strip() for i in dbmetas["authors"].split(",")],
+                    genres=[i.strip() for i in dbmetas["genres"].split(",")],
+                    rating=float(dbmetas["rating"]),
+                    release_date=dbmetas["release_date"],
+                    status=identify_status(dbmetas["status"]),
+                    description=dbmetas["description"]
+                ),
+                chapters=chapter_list
+            )
+        else:
+        # fetch from web
+            with requests.Session() as session:
+                parser = identify_parser(url)
+                if parser is not None:
+                    markup, status_code = fetch_markup(session, url)
+                    soup = parse_markup(markup)
+                    novel = get_novel(url, soup, parser)
+                    
+        if novel is not None:
+            self.novel = novel
+            self.ids.title.text = novel.title
+            self.ids.authors.value = ', '.join(novel.meta.authors)
+            self.ids.genres.value = ', '.join(novel.meta.genres)
+            self.ids.status.value = novel.meta.status.name
+            self.ids.release_date.value = novel.meta.release_date
+            self.ids.rating.value = str(novel.meta.rating)
+            dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
+            self.ids.chapter_list.data = dict_chapters
+
+            thumbnail_path = Path(
+                "novelreader", 
+                "public", 
+                "imgs", 
+                novel.thumbnail.split("/")[-1]
+            ).absolute()
+            # download thumbnail
+            session = requests.Session()
+            if download_thumbnail(session, self.novel.thumbnail):
+                plog(["downloaded"], 'thumnbail')
+            session.close()
+            if thumbnail_path.exists():
+                self.ids.thumbnail.source = str(thumbnail_path)
 
     def add_to_library(self):
         """Add Current Instance Of Novel To Database"""
@@ -123,75 +205,6 @@ class InfoPage(Screen):
             reader_page.update_content(content)
             self.manager.current = "reader_page"
     
-    def update_widgets(self, url):
-        """Update All Widgets"""
-        # fetch from database
-        dbnovel = Database.select_novel(self.db.conn, url)
-        dbmetas = Database.select_meta(self.db.conn, url)
-        dbchapters = Database.select_chapter(self.db.conn, url)
-
-        novel = None
-        if dbnovel is not None and dbmetas is not None:      
-            chapter_list = []
-            for chapter in dbchapters:
-                chapter_list.append(
-                    Chapter(
-                        id=chapter["chapter_id"],
-                        title=chapter["title"],
-                        url=chapter["url"],
-                        content=chapter["content"],
-                    )
-                )
-
-            novel = Novel(
-                id=dbnovel["id"],
-                title=dbnovel["title"],
-                url=dbnovel["url"],
-                thumbnail=dbnovel["thumbnail"],
-                meta=Meta(
-                    authors=[i.strip() for i in dbmetas["authors"].split(",")],
-                    genres=[i.strip() for i in dbmetas["genres"].split(",")],
-                    rating=float(dbmetas["rating"]),
-                    release_date=dbmetas["release_date"],
-                    status=identify_status(dbmetas["status"]),
-                    description=dbmetas["description"]
-                ),
-                chapters=chapter_list
-            )
-        else:
-        # fetch from web
-            with requests.Session() as session:
-                parser = identify_parser(url)
-                if parser is not None:
-                    markup, status_code = fetch_markup(session, url)
-                    soup = parse_markup(markup)
-                    novel = get_novel(url, soup, parser)
-                    
-        if novel is not None:
-            self.novel = novel
-            self.ids.title.text = novel.title
-            self.ids.authors.value = ', '.join(novel.meta.authors)
-            self.ids.genres.value = ', '.join(novel.meta.genres)
-            self.ids.status.value = novel.meta.status.name
-            self.ids.release_date.value = novel.meta.release_date
-            self.ids.rating.value = str(novel.meta.rating)
-            dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
-            self.ids.chapter_list.data = dict_chapters
-
-            thumbnail_path = Path(
-                "novelreader", 
-                "public", 
-                "imgs", 
-                novel.thumbnail.split("/")[-1]
-            ).absolute()
-            # download thumbnail
-            session = requests.Session()
-            if download_thumbnail(session, self.novel.thumbnail):
-                plog(["downloaded"], 'thumnbail')
-            session.close()
-            if thumbnail_path.exists():
-                self.ids.thumbnail.source = str(thumbnail_path)
-
 class ChapterItem(Button):
     """Chapter list item"""
     url = StringProperty()
