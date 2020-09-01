@@ -40,10 +40,13 @@ class Repository:
         """Get All Novels From Database"""
         return self.__database.select_novels()
     
-    def get_novel(self, url: str) -> Novel:
+    def get_novel(self, url: str, offline: bool = False) -> Novel:
         """Get Novel From Web, If Nothing """
         # get from web
         novel = None
+        if offline:
+            return self.__database.select_novel(url)
+            
         try: 
             novel = self.__service.fetch_novel(url)
             if novel is not None:
