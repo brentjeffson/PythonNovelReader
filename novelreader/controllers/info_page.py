@@ -23,7 +23,6 @@ class InfoPage(Screen):
     """Page containing informations related to novel"""
 
     novel = ObjectProperty(Novel(
-        id=-1,
         title="",
         url="",
         thumbnail="",
