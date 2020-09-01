@@ -97,41 +97,12 @@ class InfoPage(Screen):
     
     def update_chapters(self, url: str):
         """Update Chapters Of Novel"""
-        # get saved chapters from database
-        saved_chapters = Database.select_novel_chapters(self.db.conn, url)
-        converted_saved_chapters = []
-        # convert to Chapter object
-        if len(saved_chapters) > 0:
-            for saved_chapter in saved_chapters:
-                converted_saved_chapters.append(Chapter(
-                    id=saved_chapter["chapter_id"],
-                    title=saved_chapter["title"],
-                    url=saved_chapter["url"],
-                    content=saved_chapter["content"]
-                ))
-            saved_chapters = converted_saved_chapters
-        # fetched chapters from web
-        new_chapters = []
-        with requests.Session() as session:
-            new_chapters = self.fetch_chapters(session, url)
-        # compare new chapters and saved chapters
-        if len(new_chapters) > 0 and len(saved_chapters) > 0:
-            num_new_chapter = 0
-            for new_chapter in new_chapters:
-                for saved_chapter in saved_chapters:
-                    # if new chapter is not in saved chapters
-                    if new_chapter.url != saved_chapter.url:
-                        # save new chapter to database
-                        with self.db.conn:
-                            Database.insert_chapter(self.db.conn, url, new_chapter)
-                            num_new_chapter += 1
-        elif len(new_chapters):
-            # no saved chapter for novel, save all new chapters
-            for new_chapter in new_chapters:
-                with self.db.conn:
-                    Database.insert_chapter(self.db.conn, url, new_chapter)
-                    num_new_chapter += 1
-                        
+        new_chapters, num_new_chapter, self.repository.update_chapters(url)
+        
+        if new_chapters:
+            dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in new_chapters]
+            self.ids.chapter_list.data = dict_chapters
+
         plog(["# Of New Chapters"], num_new_chapter)
         
 
