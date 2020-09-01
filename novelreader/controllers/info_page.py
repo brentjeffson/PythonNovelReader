@@ -61,7 +61,7 @@ class InfoPage(Screen):
 
     def add_to_library(self):
         """Add Current Instance Of Novel To Database"""
-        novel = self.repository.get_novel(self.novel.url, offline=True)
+        novel = self.repository.get_novel(self.novel.url)
         if novel is None:
             self.repository.insert_novel(self.novel)
             self.repository.insert_meta(self.novel.url, self.novel.meta)
