@@ -60,6 +60,7 @@ class Database:
             TITLE TEXT NOT NULL,
             CONTENT TEXT,
             NOVEL_URL TEXT NOT NULL,
+            HAS_READ INTEGER,
             FOREIGN KEY (NOVEL_URL)
                 REFERENCES NOVELS (URL));
         """
