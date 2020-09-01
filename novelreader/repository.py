@@ -57,19 +57,6 @@ class Repository:
             chapters = self.__database.select_chapters(url)
         return chapters
 
-    def update_chapters(self, url: str):
-        """Fetch chapters of novel from web, return updated chapters"""
-        new_chapters = self.__service.fetch_chapters(url)
-        num_new_chapters = 0
-        if new_chapters: 
-            saved_chapters = self.__database.select_chapters(url)
-            for new_chapter in new_chapters:
-                for saved_chapter in saved_chapters:
-                    if new_chapter.url != saved_chapter.url:
-                        self.__database.insert_chapter(url, new_chapter)
-                        num_new_chapters += 1
-        return new_chapters, num_new_chapters
-
     def get_meta():
         # get from web
         meta = []
@@ -83,4 +70,17 @@ class Repository:
             # get from database
             meta = self.__database.select_meta(url)
         return meta
+
+    def update_chapters(self, url: str):
+        """Fetch chapters of novel from web, return updated chapters"""
+        new_chapters = self.__service.fetch_chapters(url)
+        num_new_chapters = 0
+        if new_chapters: 
+            saved_chapters = self.__database.select_chapters(url)
+            for new_chapter in new_chapters:
+                for saved_chapter in saved_chapters:
+                    if new_chapter.url != saved_chapter.url:
+                        self.__database.insert_chapter(url, new_chapter)
+                        num_new_chapters += 1
+        return new_chapters, num_new_chapters
 
