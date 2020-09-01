@@ -10,11 +10,13 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from pathlib import Path
+from wescrape.models.novel import Novel
 from novelreader.repository import Repository
 from novelreader.services import download_thumbnail
 from novelreader.models import Database
 from novelreader.helpers import plog, thumbnail_path
 import requests
+import threading
 
 
 Builder.load_file(str(Path('novelreader/views/library_page.kv').absolute()))
