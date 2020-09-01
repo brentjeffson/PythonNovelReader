@@ -216,7 +216,7 @@ class Database:
         chapter = self.__convert_row(chapter_row, Chapter)
         return chapter
 
-    def select_metas(self) -> Metas:
+    def select_metas(self) -> [Meta]:
         cur = Database.__select(self.__conn, [], "metas")
         meta_rows = cur.fetchall()
         metas = self.__convert_rows(meta_rows, Meta)
