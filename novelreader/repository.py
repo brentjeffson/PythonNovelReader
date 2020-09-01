@@ -35,6 +35,10 @@ class Repository:
 
     def create_metas_table(self):
         self.__database.create_metas_table()
+
+    def get_novels(self) -> [Novel]:
+        """Get All Novels From Database"""
+        return self.__database.select_novels()
     
     def get_novel(self, url: str) -> Novel:
         """Get Novel From Web, If Nothing """
