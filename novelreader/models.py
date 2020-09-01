@@ -83,9 +83,9 @@ class Database:
         self.__conn.execute(statement)
 
     # insert functions
-    def insert_novel(self, url: str, title: str, thumbnail: str):
+    def insert_novel(self, novel: Novel):
         statement = """INSERT INTO NOVELS (URL, TITLE, THUMBNAIL) VALUES (?, ?, ?);"""
-        self.__conn.execute(statement, (url, title, thumbnail))
+        self.__conn.execute(statement, (novel.url, novel.title, novel.thumbnail))
 
     def insert_meta(self, novel_url: str, meta: Meta):
         statement = """INSERT INTO 
