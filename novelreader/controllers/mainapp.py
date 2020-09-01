@@ -1,6 +1,7 @@
 from kivy.app import App, Builder
 from kivy.core.window import Window
 from kivy.config import Config
+from novelreader.repository import Repository
 from novelreader.services import Services
 from novelreader.models import Database
 from novelreader.controllers.pages import PageManager
