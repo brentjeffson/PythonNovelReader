@@ -115,23 +115,10 @@ class InfoPage(Screen):
             return chapters
         return []
         
-
-    def prep_content(self, url):
-        # todo fetch novel from database
-        # if None; fetch from web
-        with requests.Session() as session:
-            Clock.schedule_once(partial(self.fetch_content, session, url), 0)
-
-    def fetch_content(self, session, url, _):
-        parser = identify_parser(url)
-
-        reader_page = self.manager.get_screen("reader_page")
-        markup, status_code = fetch_markup(session, url)
-        soup = parse_markup(markup)
-        content = get_content(soup, parser)
-        if content is not None:
-            reader_page.update_content(content)
-            self.manager.current = "reader_page"
+    def read_chapter(self, url):
+        content = self.repository.get_content(url)
+        self.manager.get_screen("reader_page").update_content(content)
+        self.manager.current = "reader_page"
     
 class ChapterItem(Button):
     """Chapter list item"""
@@ -139,7 +126,7 @@ class ChapterItem(Button):
 
     def read(self):
         plog(["reading"], self.text)
-        self.parent.parent.parent.parent.prep_content(self.url)
+        self.parent.parent.parent.parent.read_chapter(self.url)
 
 class InfoItem(GridLayout):
     """Contain a name and value"""
