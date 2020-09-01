@@ -64,8 +64,8 @@ class InfoPage(Screen):
         novel = self.repository.get_novel(self.novel.url, offline=True)
         if novel is None:
             self.repository.insert_novel(self.novel)
-            self.repository.insert_meta(self.novel.meta)
-            self.repository.insert_chapters(self.novel.chapters)
+            self.repository.insert_meta(self.novel.url, self.novel.meta)
+            self.repository.insert_chapters(self.novel.url, self.novel.chapters)
             self.repository.save()
             
             plog(["added to library"], self.ids.title.text)
