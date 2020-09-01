@@ -97,7 +97,7 @@ class InfoPage(Screen):
     
     def update_chapters(self, url: str):
         """Update Chapters Of Novel"""
-        new_chapters, num_new_chapter, self.repository.update_chapters(url)
+        new_chapters, num_new_chapter = self.repository.update_chapters(url)
         
         if new_chapters:
             dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in new_chapters]
