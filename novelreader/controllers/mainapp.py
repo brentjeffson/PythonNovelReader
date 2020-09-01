@@ -5,6 +5,7 @@ from kivy.config import Config
 from pathlib import Path
 from novelreader.models import Database
 import sqlite3 as sql
+import requests
 
 Window.size = (840, 640)
 pages_manager = Builder.load_file(str(Path("novelreader/views/pages.kv").absolute()))
@@ -16,18 +17,25 @@ class MainApp(App):
         return pages_manager
 
     def on_start(self):
+        # create services instance
+        session = requests.Session()
+        services = Services.build(session)
+
         # create database instance
         db = Database(Path("novelreader", "public", "novels.db"))
         db.conn.row_factory = sql.Row
 
-        # create tables
-        Database.create_novels_table(db.conn)
-        Database.create_chapters_table(db.conn)
-        Database.create_metas_table(db.conn)
+        # create repository
+        repository = Repository.build(db, services)
 
-        # initialize page content
-        self.root.get_screen("library_page").on_start(db)
-        self.root.get_screen("info_page").on_start(db)
+        # create tables
+        repository.create_novels_table()
+        repository.create_chapters_table()
+        repository.create_metas_table()
+
+        # initialize page
+        self.root.get_screen("library_page").on_start(repository)
+        self.root.get_screen("info_page").on_start(repository)
         
     def check_resize(self, instance, x, y):
         # resize X
