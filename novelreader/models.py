@@ -153,7 +153,7 @@ class Database:
             
         return self.__conn.execute(statement, where_val)
 
-    def __convert_row(row: dict, obj_type):
+    def __convert_row(self, row: dict, obj_type):
         converted_row = None
         if row:
             try:
@@ -183,7 +183,7 @@ class Database:
                 raise ex
         return converted_row
 
-    def __convert_rows(rows: [dict], convert_type):
+    def __convert_rows(self, rows: [dict], convert_type):
         converted_rows = []
         if rows:
             for row in rows:
