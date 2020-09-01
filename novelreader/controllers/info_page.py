@@ -9,8 +9,6 @@ from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from wescrape.models.novel import Novel, Meta, Website, Status, Chapter
 from novelreader.models import Database
 from novelreader.helpers import plog
-from novelreader.services.ndownloader import (download_thumbnail, fetch_markup, parse_markup, 
-get_content, get_novel, get_chapters)
 from pathlib import Path
 from functools import partial
 import requests
@@ -21,13 +19,6 @@ Builder.load_file(str(Path('novelreader/views/info_page.kv').absolute()))
 
 class InfoPage(Screen):
     """Page containing informations related to novel"""
-    chapter_list = ObjectProperty()
-    title = ObjectProperty()
-    authors = ObjectProperty()
-    genres = ObjectProperty()
-    release_date = ObjectProperty()
-    status = ObjectProperty()
-    rating = ObjectProperty()
 
     novel = ObjectProperty(Novel(
         id=-1,
@@ -57,13 +48,13 @@ class InfoPage(Screen):
 
             # download thumbnail
             session = requests.Session()
-            if download_thumbnail(session, self.novel.thumbnail):
+            if download_thumbnail(session, self.ids.novel.thumbnail):
                 plog(["downloaded"], 'thumnbail')
             session.close()
             
-            plog(["added to library"], self.title.text)
+            plog(["added to library"], self.ids.title.text)
         else:
-            plog(["in library"], self.title.text)
+            plog(["in library"], self.ids.title.text)
     
     def update_chapters(self, url: str):
         """Update Chapters Of Novel"""
@@ -178,14 +169,14 @@ class InfoPage(Screen):
                     
         if novel is not None:
             self.novel = novel
-            self.title.text = novel.title
-            self.authors.value = ', '.join(novel.meta.authors)
-            self.genres.value = ', '.join(novel.meta.genres)
-            self.status.value = novel.meta.status.name
-            self.release_date.value = novel.meta.release_date
-            self.rating.value = str(novel.meta.rating)
+            self.ids.title.text = novel.title
+            self.ids.authors.value = ', '.join(novel.meta.authors)
+            self.ids.genres.value = ', '.join(novel.meta.genres)
+            self.ids.status.value = novel.meta.status.name
+            self.ids.release_date.value = novel.meta.release_date
+            self.ids.rating.value = str(novel.meta.rating)
             dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
-            self.chapter_list.data = dict_chapters
+            self.ids.chapter_list.data = dict_chapters
 
             thumbnail_path = Path(
                 "novelreader", 
