@@ -47,7 +47,7 @@ class InfoPage(Screen):
         # update widgets
         if novel and chapter and meta:
             self.novel = Novel(
-                url=novel.url
+                url=novel.url,
                 title=novel.title,
                 thumbnail=novel.thumbnail,
                 meta=meta,
@@ -68,7 +68,7 @@ class InfoPage(Screen):
             self.ids.chapter_list.data = dict_chapters
 
             # download thumbnail
-            with requests.Session() as session
+            with requests.Session() as session:
                 download_thumbnail(session, novel.thumbnail)
 
             if thumbnail_path(novel.thumbnail).exists():
