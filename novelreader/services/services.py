@@ -1,4 +1,5 @@
 import requests
+from pathlib import Path
 from wescrape.helpers import identify_parser, parse_markup
 from wescrape.models.novel import Novel, Chapter, Meta
 
