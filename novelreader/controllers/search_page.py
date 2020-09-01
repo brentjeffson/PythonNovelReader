@@ -27,20 +27,6 @@ class SearchPage(Screen):
         self.manager.get_screen("info_page").update_widgets(url)
         self.manager.current = "info_page"
 
-    def fetch_novels(self, session, _):
-        payload = {
-            "action": "wp-manga-search-manga",
-            "title": self.search_input.text
-        }
-
-        for i in range(3):
-            try:
-                resp = session.post("https://boxnovel.com/wp-admin/admin-ajax.php", data=payload)
-                self.update_search_list(resp.json()["data"])
-                break
-            except requests.exceptions.ConnectionError as ex:
-                plog(["retry"], i+1)
-
     def update_search_list(self, novels: {}):
         for novel in novels:
             self.search_list_recycle.data.append({"text": novel.title, "url": novel.url})
