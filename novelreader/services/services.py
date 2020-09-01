@@ -33,6 +33,13 @@ class Services:
     def fetch_meta(self, url: str) -> Meta:
         meta = self.__fetch(Meta, url)
         return meta
+
+    def fetch_content(self, url: str) -> str:
+        markup = Services.fetch_markup(url)
+        soup = parse_markup(markup)
+        parser = identify_parser(url)
+        content = parser.get_content(soup)
+        return content
         
     @staticmethod
     def fetch_markup(session: requests.Session, url: str) -> str:
