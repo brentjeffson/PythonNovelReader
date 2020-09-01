@@ -18,7 +18,7 @@ class Services:
 
     def __fetch(self, item_type, url: str):
         parser = identify_parser(url)
-        markup = Service.fetch_markup(self.__session, url)
+        markup = Services.fetch_markup(self.__session, url)
         item = None
         if markup is not None and parser is not None:
             soup = parse_markup(markup)
