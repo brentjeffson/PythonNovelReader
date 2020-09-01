@@ -119,7 +119,8 @@ class Database:
         )
         self.__conn.execute(statement, values)
 
-    def update_chapter(self, chapter: Chapter):
+
+    def update_chapter(self, url: str, chapter: Chapter):
         """Update cols of selected chapter whose col URL is `url`"""
         statement = """UPDATE CHAPTERS 
         SET CHAPTER_ID = ?,
