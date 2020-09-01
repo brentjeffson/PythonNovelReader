@@ -82,7 +82,7 @@ class Repository:
             title=chapter.title,
             content=content
         )
-        self.__database.update_chapter(url, updated_chapter)
+        self.__database.update_chapter(updated_chapter)
         return content
 
     def update_chapters(self, url: str):
