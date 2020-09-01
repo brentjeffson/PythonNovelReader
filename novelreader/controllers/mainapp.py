@@ -24,11 +24,10 @@ class MainApp(App):
         services = Services.build(session)
 
         # create database instance
-        db = Database(Path("novelreader", "public", "novels.db"))
-        db.conn.row_factory = sql.Row
+        database = Database(str(Path("novelreader", "public", "novels.db")))
 
         # create repository
-        repository = Repository.build(db, services)
+        repository = Repository.build(services, database)
 
         # create tables
         repository.create_novels_table()

@@ -1,4 +1,5 @@
 from kivy.app import Builder
+from kivy.clock import Clock
 from kivy.properties import ObjectProperty, StringProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.recycleview import RecycleView
@@ -9,9 +10,10 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from pathlib import Path
+from novelreader.repository import Repository
 from novelreader.services import download_thumbnail
-from novelreader.helpers import plog
 from novelreader.models import Database
+from novelreader.helpers import plog, thumbnail_path
 import requests
 
 
@@ -25,30 +27,33 @@ class LibraryPage(Screen):
         super(LibraryPage, self).__init__(**kwargs)
         # self.__selected_novel = None
     
-    def on_start(self, db):
+    def on_start(self, repository: Repository):
         plog(["on start"], "library_page")
-        self.db = db
+        self.repo = repository
 
         # load saved novels in database
-        novels = Database.select_novels(db.conn)
-        if len(novels) > 0:
+        novels = self.repo.get_novels()
+        if novels:
             for novel in novels:
-                thumbnail_path = Path(
-                    "novelreader", "public", "imgs",
-                    novel["thumbnail"].split("/")[-1]
-                ).absolute()
+                threading.Thread(target=download_thumbnail, args=(novel.thumbnail,))
+            self.update_library()
 
+            
 
-                session = requests.Session()
-                download_thumbnail(session, novel["thumbnail"])
-                session.close()
-
-                self.novellist.data.append({
-                    "url": novel["url"],
-                    "title": novel["title"],
-                    "thumbnail": str(thumbnail_path)
-                })
-            plog(["loaded"], 'novels')
+    def download_thumbnail(self, url):
+        with requests.Session() as session:
+            download_thumbnail(session, url)
+        
+    def update_library(self, novels: [Novel]):
+        """Update Novels Library From `novels`"""
+        for novel in novels:
+            self.novellist.data.append({
+                "url": novel.url,
+                "title": novel.title,
+                "thumbnail": thumbnail_path(novel.thumbnail)
+            })
+        plog(["loaded", str(len(novels))], 'novels')
+        
 
     def get_selected_novel(self):
         return self.selected_novel
