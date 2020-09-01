@@ -43,7 +43,7 @@ class Services:
         return meta
 
     def fetch_content(self, url: str) -> str:
-        markup = Services.fetch_markup(url)
+        markup = Services.fetch_markup(self.__session, url)
         soup = parse_markup(markup)
         parser = identify_parser(url)
         content = parser.get_content(soup)
