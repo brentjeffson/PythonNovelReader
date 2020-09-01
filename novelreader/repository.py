@@ -14,7 +14,7 @@ class Repository:
     INSTANCE = None
 
     @classmethod
-    def build(cls, service: Service, database: Database) -> Repository:
+    def build(cls, service: Services, database: Database) -> Repository:
         if cls.INSTANCE is None:
             cls.INSTANCE = Repository(service, database)
         return cls.INSTANCE
@@ -23,7 +23,7 @@ class Repository:
     def instance(cls):
         return cls.INSTANCE
 
-    def __init__(self, service: Service, database: Database):
+    def __init__(self, service: Services, database: Database):
         self.__db = db
         self.__service = service
         self.__database = database
@@ -56,6 +56,19 @@ class Repository:
             # get from database
             chapters = self.__database.select_chapters(url)
         return chapters
+
+    def update_chapters(self, url: str):
+        """Fetch chapters of novel from web, return updated chapters"""
+        new_chapters = self.__service.fetch_chapters(url)
+        num_new_chapters = 0
+        if new_chapters: 
+            saved_chapters = self.__database.select_chapters(url)
+            for new_chapter in new_chapters:
+                for saved_chapter in saved_chapters:
+                    if new_chapter.url != saved_chapter.url:
+                        self.__database.insert_chapter(url, new_chapter)
+                        num_new_chapters += 1
+        return new_chapters, num_new_chapters
 
     def get_meta():
         # get from web
