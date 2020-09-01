@@ -1,6 +1,6 @@
 import sqlite3 as sql
 from novelreader.helpers import plog
-from wescrape.models.novel import Meta, Chapter
+from wescrape.models.novel import Meta, Chapter, Meta, Novel
 
 class Database:
     INSTANCE = None
