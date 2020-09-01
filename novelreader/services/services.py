@@ -23,7 +23,7 @@ class Services:
         if markup is not None and parser is not None:
             soup = parse_markup(markup)
             if item_type == Novel:
-                item = parser.get_novel(soup)
+                item = parser.get_novel(url, soup)
             if item_type == Chapter:
                 item = parser.get_chapters(soup)
             if item_type == Meta:
