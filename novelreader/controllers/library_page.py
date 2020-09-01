@@ -51,7 +51,7 @@ class LibraryPage(Screen):
             self.novellist.data.append({
                 "url": novel.url,
                 "title": novel.title,
-                "thumbnail": thumbnail_path(novel.thumbnail)
+                "thumbnail": str(thumbnail_path(novel.thumbnail))
             })
         plog(["loaded", str(len(novels))], 'novels')
         
