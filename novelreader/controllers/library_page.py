@@ -60,7 +60,7 @@ class LibraryPage(Screen):
         return self.selected_novel
     
     def goto_info_page(self, novel):
-        self.manager.get_screen('info_page').update_widgets(novel["url"])
+        self.manager.get_screen('info_page').open(novel["url"])
         self.manager.current = 'info_page'
 
 # recyclerview
