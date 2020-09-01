@@ -1,9 +1,9 @@
 import requests
 import sqlite3 as sql
+from novelreader.helpers import plog
 from novelreader.services import Services
 from novelreader.models import Database
 from wescrape.models.novel import Novel, Chapter, Meta
-
 
 
 # Handles getting data from database and web
