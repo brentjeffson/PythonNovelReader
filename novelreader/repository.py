@@ -112,4 +112,14 @@ class Repository:
                         self.__database.insert_chapter(url, new_chapter)
                         num_new_chapters += 1
         return new_chapters, num_new_chapters
+    
+    def insert_novel(self, novel: Novel):
+        self.__database.insert_novel(novel)
+
+    def insert_chapters(self, novel_url: str, chapters: Chapter):
+        for chapter in chapters:
+            self.__database.insert_chapter(novel_url, chapter)
+
+    def insert_meta(self, novel_url: str, meta: Meta):
+        self.__database.insert_meta(novel_url, meta)
 
