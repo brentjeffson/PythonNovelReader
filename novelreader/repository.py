@@ -1,9 +1,9 @@
 import requests
 import sqlite3 as sql
-from novelreader.helpers import plog
 from novelreader.services import Services
 from novelreader.models import Database
 from wescrape.models.novel import Novel, Chapter, Meta
+
 
 
 # Handles getting data from database and web
@@ -26,10 +26,6 @@ class Repository:
     def __init__(self, service: Services, database: Database):
         self.__service = service
         self.__database = database
-    
-    def save(self):
-        """Saves changes to database"""
-        self.__database.commit()
 
     def create_novels_table(self):
         self.__database.create_novels_table()
@@ -39,20 +35,7 @@ class Repository:
 
     def create_metas_table(self):
         self.__database.create_metas_table()
-
-    def insert_novel(self, novel: Novel):
-        self.__database.insert_novel(novel.url, novel.title, novel.thumbnail)
-
-    def insert_chapter(self, novel_url: str, chapter: Chapter):
-        self.__database.insert_chapter(novel_url, chapter)
     
-    def insert_meta(self, novel_url: str, meta: Meta):
-        self.__database.insert_meta(novel_url, meta)
-    
-    def insert_chapters(self, novel_url: str, chapters: [Chapter]):
-        for chapter in chapters:
-            self.insert_chapter(novel_url, chapter)
-
     def get_novel(self, url: str) -> Novel:
         """Get Novel From Web, If Nothing """
         # get from web
