@@ -9,7 +9,7 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from pathlib import Path
-from novelreader.services.ndownloader import download_thumbnail
+from novelreader.services import download_thumbnail
 from novelreader.helpers import plog
 from novelreader.models import Database
 import requests
