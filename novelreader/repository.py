@@ -26,6 +26,15 @@ class Repository:
     def __init__(self, service: Services, database: Database):
         self.__service = service
         self.__database = database
+
+    def create_novels_table(self):
+        self.__database.create_novels_table()
+    
+    def create_chapters_table(self):
+        self.__database.create_chapters_table()
+
+    def create_metas_tables(self):
+        self.__database.create_metas_table()
     
     def get_novel(self, url: str) -> Novel:
         """Get Novel From Web, If Nothing """
