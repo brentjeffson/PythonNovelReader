@@ -1,8 +1,9 @@
 import requests
-from wescrape.models.novel import Novel
+from wescrape.models.novel import Novel, Chapter
 from wescrape.parsers.nparse import NovelBaseParser
 from bs4 import BeautifulSoup
 from pathlib import Path
+
 
 def download_thumbnail(session: requests.Session, url: str) -> bool:
     filename = url.split("/")[-1]
@@ -22,10 +23,12 @@ def fetch_markup(session: requests.Session, url: str) -> str:
         return resp.text, resp.status_code
     return None, resp.status_code
 
+
 def parse_markup(markup: str, parser: str = "html.parser"):
     """Parse markup using BeautifulSoup"""
     soup = BeautifulSoup(markup, features="html.parser")
     return soup
+
 
 # parse novel information together with its chapters
 def get_novel(url: str, soup: BeautifulSoup, parser: NovelBaseParser) -> Novel:
@@ -34,9 +37,15 @@ def get_novel(url: str, soup: BeautifulSoup, parser: NovelBaseParser) -> Novel:
     novel.url = url
     return novel
 
-# todo parse_content, parse content of a chapter
+
+
 def get_content(soup: BeautifulSoup, parser: NovelBaseParser) -> str:
     """Get content of chapter from parsed chapter markup."""
     content = parser.get_content(soup)
     return content
 
+
+def get_chapters(soup: BeautifulSoup, parser: NovelBaseParser) -> [Chapter]:
+    """Get Chapters Of Novel From Parser Novel Markup"""
+    chapters = parser.get_chapters(soup)
+    return chapters
