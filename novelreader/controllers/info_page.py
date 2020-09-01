@@ -75,14 +75,12 @@ class InfoPage(Screen):
 
     def add_to_library(self):
         """Add Current Instance Of Novel To Database"""
-        novel = Database.select_novel(self.db.conn, self.novel.url)
-
+        novel = self.repository.get_novel(self.novel.url, offline=True)
         if novel is None:
-            Database.insert_novel(self.db.conn, self.novel.url, self.novel.title, self.novel.thumbnail)
-            Database.insert_meta(self.db.conn, self.novel.url, self.novel.meta)
-            for chapter in self.novel.chapters:
-                Database.insert_chapter(self.db.conn, self.novel.url, chapter)
-            self.db.commit()
+            self.repository.insert_novel(self.novel)
+            self.repository.insert_meta(self.novel.meta)
+            self.repository.insert_chapters(self.novel.chapters)
+            self.repository.save()
 
             # download thumbnail
             session = requests.Session()
