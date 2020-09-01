@@ -32,13 +32,13 @@ class LibraryPage(Screen):
     def on_start(self, repository: Repository):
         plog(["on start"], "library_page")
         self.repo = repository
-        Clock.schedule_interval(lambda dt: update_library(novels), 1*60)
+        Clock.schedule_interval(lambda dt: self.update_library(novels), 1*60)
 
         # load saved novels in database
         novels = self.repo.get_novels()
         if novels:
             for novel in novels:
-                threading.Thread(target=download_thumbnail, args=(novel.thumbnail,))
+                threading.Thread(target=self.download_thumbnail, args=(novel.thumbnail,)).start()
             self.update_library(novels)
 
     def download_thumbnail(self, url):
