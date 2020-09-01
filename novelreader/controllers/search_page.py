@@ -7,7 +7,6 @@ from kivy.uix.button import Button
 from wescrape.models.novel import Website
 from wescrape.helpers import identify_parser
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
-from novelreader.services.ndownloader import (fetch_markup, parse_markup, get_novel)
 from novelreader.helpers import plog
 from pathlib import Path
 from functools import partial
