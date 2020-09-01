@@ -26,6 +26,10 @@ class Repository:
     def __init__(self, service: Services, database: Database):
         self.__service = service
         self.__database = database
+    
+    def save(self):
+        """Saves changes to database"""
+        self.__database.commit()
 
     def create_novels_table(self):
         self.__database.create_novels_table()
