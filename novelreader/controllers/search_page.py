@@ -24,7 +24,7 @@ class SearchPage(Screen):
         self.__searching = False
 
     def goto_info_page(self, url):        
-        self.manager.get_screen("info_page").update_widgets(url)
+        self.manager.get_screen("info_page").open(url)
         self.manager.current = "info_page"
 
     def update_search_list(self, novels: {}):
