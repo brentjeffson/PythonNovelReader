@@ -23,7 +23,7 @@ class SearchPage(Screen):
         super(SearchPage, self).__init__(**kwargs)
         self.__searching = False
 
-    def goto_info_page(self, url, _):        
+    def goto_info_page(self, url):        
         self.manager.get_screen("info_page").update_widgets(url)
         self.manager.current = "info_page"
 
