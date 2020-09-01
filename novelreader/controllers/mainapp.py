@@ -1,9 +1,10 @@
 from kivy.app import App, Builder
 from kivy.core.window import Window
-from novelreader.controllers.pages import PageManager
 from kivy.config import Config
-from pathlib import Path
+from novelreader.services import Services
 from novelreader.models import Database
+from novelreader.controllers.pages import PageManager
+from pathlib import Path
 import sqlite3 as sql
 import requests
 
