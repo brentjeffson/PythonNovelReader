@@ -72,7 +72,17 @@ class Repository:
         return meta
 
     def get_chapter_content(self, url: str) -> str:
+        # get content
         content = self.__service.fetch_content(url)
+        # update content of chapter in the database
+        chapter = self.__database.select_chapter(url)
+        updated_chapter = Chapter(
+            id=chapter.id,
+            url=chapter.url,
+            title=chapter.title,
+            content=content
+        )
+        self.__database.update_chapter(url, updated_chapter)
         return content
 
     def update_chapters(self, url: str):
