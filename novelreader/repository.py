@@ -33,7 +33,7 @@ class Repository:
     def create_chapters_table(self):
         self.__database.create_chapters_table()
 
-    def create_metas_tables(self):
+    def create_metas_table(self):
         self.__database.create_metas_table()
     
     def get_novel(self, url: str) -> Novel:
