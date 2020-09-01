@@ -35,7 +35,20 @@ class Repository:
 
     def create_metas_table(self):
         self.__database.create_metas_table()
+
+    def insert_novel(self, novel: Novel):
+        self.__database.insert_novel(novel.url, novel.title, novel.thumbnail)
+
+    def insert_chapter(self, novel_url: str, chapter: Chapter):
+        self.__database.insert_chapter(novel_url, chapter)
     
+    def insert_meta(self, novel_url: str, meta: Meta):
+        self.__database.insert_meta(novel_url, meta)
+    
+    def insert_chapters(self, novel_url: str, chapters: [Chapter]):
+        for chapter in chapters:
+            self.insert_chapter(novel_url, chapter)
+
     def get_novel(self, url: str) -> Novel:
         """Get Novel From Web, If Nothing """
         # get from web
