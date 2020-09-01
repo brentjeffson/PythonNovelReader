@@ -71,7 +71,7 @@ class Database:
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             AUTHORS TEXT,
             GENRES TEXT,
-            RATING REAL,
+            RATING TEXT,
             RELEASE_DATE TEXT,
             STATUS TEXT,
             DESCRIPTION TEXT,
