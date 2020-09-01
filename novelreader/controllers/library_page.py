@@ -47,6 +47,7 @@ class LibraryPage(Screen):
         
     def update_library(self):
         """Update Novels Library From `novels`"""
+        self.novellist.data.clear()
         novels = self.repo.get_novels()
         for novel in novels:
             self.novellist.data.append({
