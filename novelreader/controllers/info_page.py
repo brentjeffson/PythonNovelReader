@@ -81,17 +81,15 @@ class InfoPage(Screen):
             self.repository.insert_meta(self.novel.meta)
             self.repository.insert_chapters(self.novel.chapters)
             self.repository.save()
-
-            # download thumbnail
-            session = requests.Session()
-            if download_thumbnail(session, self.ids.novel.thumbnail):
-                plog(["downloaded"], 'thumnbail')
-            session.close()
             
             plog(["added to library"], self.ids.title.text)
         else:
             plog(["in library"], self.ids.title.text)
     
+    def download_work(self, url: str):
+        with requests.Session() as session:
+            download_thumbnail(session, url)
+
     def update_chapters(self, url: str):
         """Update Chapters Of Novel"""
         new_chapters, num_new_chapter = self.repository.update_chapters(url)
