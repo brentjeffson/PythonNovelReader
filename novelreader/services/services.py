@@ -22,11 +22,11 @@ class Services:
         item = None
         if markup is not None and parser is not None:
             soup = parse_markup(markup)
-            if type(item_type) == Novel:
+            if item_type == Novel:
                 item = parser.get_novel(soup)
-            if type(item_type) == Chapter:
+            if item_type == Chapter:
                 item = parser.get_chapters(soup)
-            if type(item_type) == Meta:
+            if item_type == Meta:
                 item = parser.get_meta(soup)
         return item
 
