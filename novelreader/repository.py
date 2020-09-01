@@ -1,6 +1,6 @@
 import requests
 import sqlite3 as sql
-from novelreader.service import Service
+from novelreader.services import Service
 from novelreader.database import Database
 from wescrape.models.novel import Novel, Chapter, Meta
 
