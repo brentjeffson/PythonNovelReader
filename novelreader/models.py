@@ -119,23 +119,22 @@ class Database:
         )
         self.__conn.execute(statement, values)
 
-    def update_chapter(self, novel_url: str, chapter: Chapter):
+    def update_chapter(self, url: str, chapter: Chapter):
+        """Update cols of selected chapter whose col URL is `url`"""
         statement = """UPDATE CHAPTERS 
         SET CHAPTER_ID = ?,
-            URL = ?,
             TITLE = ?,
             CONTENT = ?
-        WHERE NOVEL_URL = ?;"""
+        WHERE URL = ?;"""
 
         if type(chapter) == Chapter:
             chapter = chapter.__dict__
 
         values = (
             chapter["id"],
-            chapter["url"],
             chapter["title"],
             chapter["content"],
-            novel_url
+            url
         )
 
         self.__conn.execute(statement, values)
