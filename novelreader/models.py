@@ -19,6 +19,7 @@ class Database:
     
     def __init__(self, db_file):
         self.__conn = sql.connect(db_file)
+        self.__conn.row_factory = sql.Row
 
     def commit(self):
         self.__conn.commit()
