@@ -206,14 +206,14 @@ class Database:
         novel = self.__convert_row(novel_row, Novel)
         return novel
 
-    def select_chapters(self) -> [Chapter]:
-        cur = self.__select([], "chapters")
+    def select_chapters(self, novel_url: str) -> [Chapter]:
+        cur = self.__select([], "chapters", ["novel_url"], (novel_url,))
         chapter_rows = cur.fetchall()
         chapters = self.__convert_rows(chapter_rows, Chapter)
         return chapters
 
-    def select_chapter(self, novel_url) -> Chapter:
-        cur = self.__select([], "chapters", ["novel_url"], (novel_url,))
+    def select_chapter(self, url: str) -> Chapter:
+        cur = self.__select([], "chapters", ["url"], (url,))
         chapter_row = cur.fetchone()
         chapter = self.__convert_row(chapter_row, Chapter)
         return chapter
