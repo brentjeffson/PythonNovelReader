@@ -46,7 +46,7 @@ class InfoPage(Screen):
         meta = self.repository.get_meta(url)
 
         # download thumbnail
-        threading.Thread(target=self.download_work, args(novel.thumbnail,)).start()
+        threading.Thread(target=self.download_work, args=(novel.thumbnail,)).start()
 
         # update widgets
         if novel and chapters and meta:
