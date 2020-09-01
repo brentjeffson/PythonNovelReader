@@ -14,6 +14,7 @@ from novelreader.helpers import plog, thumbnail_path
 from pathlib import Path
 from functools import partial
 import requests
+import threading
 
 
 
@@ -43,6 +44,10 @@ class InfoPage(Screen):
         novel = self.repository.get_novel(url)
         chapters = self.repository.get_chapters(url)
         meta = self.repository.get_meta(url)
+
+        # download thumbnail
+        threading.Thread(target=self.download_work, args(novel.thumbnail,)).start()
+
         # update widgets
         if novel and chapters and meta:
             self.novel = Novel(
@@ -65,10 +70,6 @@ class InfoPage(Screen):
             self.ids.rating.value = str(novel.meta.rating)
             dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
             self.ids.chapter_list.data = dict_chapters
-
-            # download thumbnail
-            with requests.Session() as session:
-                download_thumbnail(session, novel.thumbnail)
 
             if thumbnail_path(novel.thumbnail).exists():
                 self.ids.thumbnail.source = str(thumbnail_path(novel.thumbnail))
