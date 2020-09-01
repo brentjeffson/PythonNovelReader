@@ -14,7 +14,7 @@ class Repository:
     INSTANCE = None
 
     @classmethod
-    def build(cls, service: Services, database: Database) -> Repository:
+    def build(cls, service: Services, database: Database):
         if cls.INSTANCE is None:
             cls.INSTANCE = Repository(service, database)
         return cls.INSTANCE
@@ -82,7 +82,7 @@ class Repository:
             title=chapter.title,
             content=content
         )
-        self.__database.update_chapter(updated_chapter)
+        self.__database.update_chapter(url, updated_chapter)
         return content
 
     def update_chapters(self, url: str):
