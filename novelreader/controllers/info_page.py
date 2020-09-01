@@ -44,7 +44,7 @@ class InfoPage(Screen):
         chapters = self.repository.get_chapters(url)
         meta = self.repository.get_meta(url)
         # update widgets
-        if novel and chapter and meta:
+        if novel and chapters and meta:
             self.novel = Novel(
                 url=novel.url,
                 title=novel.title,
