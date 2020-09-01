@@ -36,9 +36,7 @@ class LibraryPage(Screen):
         if novels:
             for novel in novels:
                 threading.Thread(target=download_thumbnail, args=(novel.thumbnail,))
-            self.update_library()
-
-            
+            self.update_library(novels)
 
     def download_thumbnail(self, url):
         with requests.Session() as session:
