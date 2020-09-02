@@ -27,7 +27,16 @@ class Services:
         if markup is not None and parser is not None:
             soup = parse_markup(markup)
             if item_type == Novel:
-                item = parser.get_novel(url, soup)
+                novel = parser.get_novel(url, soup)
+                chapters = parser.get_chapters(soup)
+                meta = parser.get_meta(soup)
+                item = Novel(
+                    url=novel.url,
+                    title=novel.title,
+                    thumbnail=novel.thumbnail,
+                    meta=meta,
+                    chapters=chapters
+                )
             if item_type == Chapter:
                 item = parser.get_chapters(soup)
             if item_type == Meta:
@@ -35,6 +44,9 @@ class Services:
         return item
 
     def fetch_novel(self, url: str) -> Novel:
+        """Fetches novel `url` from web, 
+        then returns Novel containing chapters and meta
+        """
         novel = self.__fetch(Novel, url)
         return novel
 
