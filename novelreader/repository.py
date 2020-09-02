@@ -45,7 +45,7 @@ class Repository:
         if target_type == Novel:
             item = self.__service.fetch_novel(target)
         elif target_type == Chapter:
-            item = self.__service.fetch_chapters(target)
+            item = self.__service.fetch_chapter(target)
         elif target_type == Meta:
             item = self.__service.fetch_meta(target)
         return item
@@ -55,7 +55,7 @@ class Repository:
         if target_type == Novel:
             item = self.__database.select_novel(target)
         elif target_type == Chapter:
-            item = self.__database.select_chapters(target)
+            item = self.__database.select_chapter(target)
         elif target_type == Meta:
             item = self.__database.select_meta(target)
         return item
@@ -77,10 +77,10 @@ class Repository:
         return self.__database.select_novels()
     
     def get_novel(self, url: str, offline: bool = False) -> Novel:
-        """Get Novel From Web, If Nothing """
-        # get from web
-        novel = self.__get_item(url, Novel, offline)
-        return novel
+        return self.__get_item(url, Novel, offline)
+
+    def get_chapter(self, url: str, offline = False):
+        return self.__get_item(url, Chapter, offline)
 
     def get_chapters(self, url: str, offline: bool = False):
         # get from web
@@ -101,20 +101,7 @@ class Repository:
 
     def get_meta(self, url, offline: bool = False):
         # get from web
-        meta = []
-        if offline:
-            return self.__database.select_meta(url)
-
-        try: 
-            meta = self.__service.fetch_meta(url)
-            if meta is not None:
-                return meta
-        except Exception as ex:
-            plog(["exception", "get_chapters"], ex)
-        finally:
-            # get from database
-            meta = self.__database.select_meta(url)
-        return meta
+        return self.__get_item(url, Meta, offline)
 
     def get_chapter_content(self, url: str) -> str:
         # get content
