@@ -45,7 +45,7 @@ class Repository:
         if target_type == Novel:
             item = self.__service.fetch_novel(target)
         elif target_type == Chapter:
-            item = self.__service.fetch_chapter(target)
+            item = self.__service.fetch_chapters(target)
         elif target_type == Meta:
             item = self.__service.fetch_meta(target)
         return item
