@@ -79,8 +79,16 @@ class Repository:
     def get_novel(self, url: str, offline: bool = False) -> Novel:
         return self.__get_item(url, Novel, offline)
 
-    def get_chapter(self, url: str, offline = False):
-        return self.__get_item(url, Chapter, offline)
+    def get_chapter(self, url: str, offline = False) -> Chapter:
+        """Get a single chapter from database or web"""
+        chapters = self.__get_item(url, Chapter, offline)
+        chapter = None
+        if chapters:
+            for chapter in chapters:
+                if chapter.url == url:
+                    return chapter
+        return chapter
+
 
     def get_chapters(self, url: str, offline: bool = False):
         # get from web
