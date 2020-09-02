@@ -62,9 +62,12 @@ class Repository:
             novel = self.__database.select_novel(url)
         return novel
 
-    def get_chapters(self, url: str):
+    def get_chapters(self, url: str, offline: bool = False):
         # get from web
         chapters = []
+        if offline:
+            return self.__database.select_chapters(url)
+        
         try: 
             chapters = self.__service.fetch_chapters(url)
             if chapters is not None:
@@ -76,9 +79,12 @@ class Repository:
             chapters = self.__database.select_chapters(url)
         return chapters
 
-    def get_meta(self, url):
+    def get_meta(self, url, offline: bool = False):
         # get from web
         meta = []
+        if offline:
+            return self.__database.select_meta(url)
+
         try: 
             meta = self.__service.fetch_meta(url)
             if meta is not None:
