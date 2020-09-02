@@ -72,6 +72,13 @@ class InfoPage(Screen):
         
     def read_chapter(self, url):
         content = self.repo.get_chapter_content(url)
+        chapter = self.repo.get_chapter(url)
+        self.repo.update_chapter(Chapter(
+            id=chapter.id,
+            url=chapter.url,
+            title=chapter.title,
+            content=chapter.content
+        ))
         self.manager.get_screen("reader_page").update_content(content)
         self.manager.current = "reader_page"
 
