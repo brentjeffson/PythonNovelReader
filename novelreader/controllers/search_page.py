@@ -30,14 +30,7 @@ class SearchPage(Screen):
     def update_search_list(self, novels: {}):
         for novel in novels:
             self.search_list_recycle.data.append({"text": novel.title, "url": novel.url})
-
-    def search_work(self, session: requests.Session, keyword: str, website: Website):
-        novels = search(session, keyword, website)
-        if novels:
-            plog(["# Of Searched"], len(novels))
-            self.update_search_list(novels)
-        self.__searching = False
-
+    
     def start_search(self):
         if not self.__searching:
             self.__searching = True
@@ -49,6 +42,13 @@ class SearchPage(Screen):
                 thread.start()
         else:
             plog(["already searching"], self.search_input.text)
+
+    def search_work(self, session: requests.Session, keyword: str, website: Website):
+        novels = search(session, keyword, website)
+        if novels:
+            plog(["# Of Searched"], len(novels))
+            self.update_search_list(novels)
+        self.__searching = False
         
 class SearchItem(Button):
     url = StringProperty()
