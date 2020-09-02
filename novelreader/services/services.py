@@ -43,42 +43,42 @@ class Services:
                 item = parser.get_meta(soup)
         return item
 
-    def fetch_novel(self, url: str) -> Novel:
+    def fetch_novel(self, novel_url: str) -> Novel:
         """Fetches novel `url` from web, 
         then returns Novel containing chapters and meta
         """
-        novel = self.__fetch(Novel, url)
+        novel = self.__fetch(Novel, novel_url)
         return novel
 
-    def fetch_chapters(self, url: str) -> [Chapter]:
-        chapters = self.__fetch(Chapter, url)
+    def fetch_chapters(self, novel_url: str) -> [Chapter]:
+        chapters = self.__fetch(Chapter, novel_url)
         return chapters if chapters is not None else []
 
-    def fetch_meta(self, url: str) -> Meta:
-        meta = self.__fetch(Meta, url)
+    def fetch_meta(self, novel_url: str) -> Meta:
+        meta = self.__fetch(Meta, novel_url)
         return meta
 
-    def fetch_content(self, url: str) -> str:
-        markup = Services.fetch_markup(self.__session, url)
+    def fetch_content(self, chapter_url: str) -> str:
+        markup = Services.fetch_markup(self.__session, chapter_url)
         soup = parse_markup(markup)
         parser = identify_parser(url)
         content = parser.get_content(soup)
         return content
         
     @staticmethod
-    def fetch_markup(session: requests.Session, url: str) -> str:
-        resp = session.get(url)
+    def fetch_markup(session: requests.Session, markup_url: str) -> str:
+        resp = session.get(markup_url)
         markup = None
         if resp.ok:
             markup = resp.text
         return markup
 
 
-def download_thumbnail(session: requests.Session, url: str) -> bool:
-    filename = url.split("/")[-1]
+def download_thumbnail(session: requests.Session, thumbnail_url: str) -> bool:
+    filename = thumbnail_url.split("/")[-1]
     img_path = Path("novelreader", "public", "imgs", filename).absolute()
     if not img_path.exists():
-        resp = session.get(url)
+        resp = session.get(thumbnail_url)
         if resp.ok:
             img_path.write_bytes(resp.content)
             return True
