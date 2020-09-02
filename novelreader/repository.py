@@ -40,6 +40,38 @@ class Repository:
     def create_metas_table(self):
         self.__database.create_metas_table()
 
+    def __get_online_item(self, target, target_type):
+        item = None
+        if target_type == Novel:
+            item = self.__service.fetch_novel(target)
+        elif target_type == Chapter:
+            item = self.__service.fetch_chapters(target)
+        elif target_type == Meta:
+            item = self.__service.fetch_meta(target)
+        return item
+    
+    def __get_offline_item(self, target, target_type):
+        item = None
+        if target_type == Novel:
+            item = self.__database.select_novel(target)
+        elif target_type == Chapter:
+            item = self.__database.select_chapters(target)
+        elif target_type == Meta:
+            item = self.__database.select_meta(target)
+        return item
+
+    def __get_item(self, target, target_type, offline=False):
+        item = None
+        if offline:
+            item = self.__get_offline_item(target, target_type)
+        else:
+            try: 
+                self.__get_online_item(target, target_type)
+            except Exception as ex:
+                item = self.__get_offline_item(target, target_type)
+                plog(["exception", "get_item"], ex)
+        return item
+
     def get_novels(self) -> [Novel]:
         """Get All Novels From Database"""
         return self.__database.select_novels()
@@ -47,19 +79,7 @@ class Repository:
     def get_novel(self, url: str, offline: bool = False) -> Novel:
         """Get Novel From Web, If Nothing """
         # get from web
-        novel = None
-        if offline:
-            return self.__database.select_novel(url)
-            
-        try: 
-            novel = self.__service.fetch_novel(url)
-            if novel is not None:
-                return novel
-        except Exception as ex:
-            plog(["exception", "get_novel"], ex)
-        finally:
-            # get from database
-            novel = self.__database.select_novel(url)
+        novel = self.__get_item(url, Novel, offline)
         return novel
 
     def get_chapters(self, url: str, offline: bool = False):
