@@ -121,6 +121,10 @@ class Repository:
         content = self.__service.fetch_content(url)
         return content
 
+    def update_chapter(self, chapter: Chapter):
+        """Update chapter in database whose `url` is equal to `chapter.url`"""
+        self.__database.update_chapter(chapter)
+
     def update_chapters(self, url: str):
         """Fetch chapters of novel from web, return updated chapters"""
         new_chapters = self.__service.fetch_chapters(url)
