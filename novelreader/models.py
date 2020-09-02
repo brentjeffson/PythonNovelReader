@@ -1,5 +1,6 @@
 import sqlite3 as sql
 from novelreader.helpers import plog
+from wescrape.helpers import identify_status
 from wescrape.models.novel import Meta, Chapter, Meta, Novel
 
 class Database:
@@ -177,7 +178,7 @@ class Database:
                         genres=row["genres"].split(", "),
                         rating=row["rating"],
                         release_date=row["release_date"],
-                        status=row["status"],
+                        status=identify_status(row["status"]),
                         description=row["description"],
                     )
             except Exception as ex:
