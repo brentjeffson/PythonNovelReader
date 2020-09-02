@@ -41,6 +41,11 @@ class LibraryPage(Screen):
                 threading.Thread(target=self.download_thumbnail, args=(novel.thumbnail,)).start()
             self.update_library()
 
+    def goto_info_page(self, novel):
+        novel = self.repo.get_novel(url, offline=True)
+        self.manager.get_screen('info_page').open(novel)
+        self.manager.current = 'info_page'
+
     def download_thumbnail(self, url):
         with requests.Session() as session:
             download_thumbnail(session, url)
@@ -57,13 +62,8 @@ class LibraryPage(Screen):
             })
         plog(["loaded", str(len(novels))], 'novels')
         
-
     def get_selected_novel(self):
         return self.selected_novel
-    
-    def goto_info_page(self, novel):
-        self.manager.get_screen('info_page').open(novel["url"])
-        self.manager.current = 'info_page'
 
 # recyclerview
 class NovelList(RecycleView):
