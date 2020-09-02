@@ -23,7 +23,7 @@ class SearchPage(Screen):
         super(SearchPage, self).__init__(**kwargs)
         self.__searching = False
     
-    def on_start(self, respository):
+    def on_start(self, repository):
         self.repo = repository
 
     def goto_info_page(self, url):        
