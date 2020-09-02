@@ -173,8 +173,8 @@ class Database:
                     )
                 elif obj_type == Meta:
                     converted_row = Meta(
-                        authors=[row["authors"].split(", ")],
-                        genres=[row["genres"].split(", ")],
+                        authors=row["authors"].split(", "),
+                        genres=row["genres"].split(", "),
                         rating=row["rating"],
                         release_date=row["release_date"],
                         status=row["status"],
