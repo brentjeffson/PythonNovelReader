@@ -22,9 +22,14 @@ class SearchPage(Screen):
     def __init__(self, **kwargs):
         super(SearchPage, self).__init__(**kwargs)
         self.__searching = False
+    
+    def on_start(self, respository):
+        self.repo = repository
 
     def goto_info_page(self, url):        
-        self.manager.get_screen("info_page").open(url)
+        # get offline data on novel
+        novel = self.repo.get_novel(url, offline=True)
+        self.manager.get_screen("info_page").open(novel)
         self.manager.current = "info_page"
 
     def update_search_list(self, novels: {}):
