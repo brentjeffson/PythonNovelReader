@@ -13,6 +13,10 @@ class Services:
             cls.INTANCE = Services(session)
         return cls.INTANCE
 
+    @classmethod
+    def instance(cls):
+        return cls.INSTANCE
+
     def __init__(self, session: requests.Session):
         self.__session = session
 
