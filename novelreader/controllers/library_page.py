@@ -41,10 +41,10 @@ class LibraryPage(Screen):
                 threading.Thread(target=self.download_thumbnail, args=(novel.thumbnail,)).start()
             self.update_library()
 
-    def goto_info_page(self, novel):
+    def goto_info_page(self, url):
         novel = self.repo.get_novel(url, offline=True)
-        chapters = self.repository.get_chapters(url)
-        meta = self.repository.get_meta(url)
+        chapters = self.repo.get_chapters(url, offline=True)
+        meta = self.repo.get_meta(url, offline=True)
 
         self.manager.get_screen("info_page").open(Novel(
             url=novel.url,
@@ -111,7 +111,7 @@ class NovelItem(RecycleDataViewBehavior, GridLayout):
         ''' Respond to the selection of items in the view. '''
         self.selected = is_selected
         if is_selected:
-            rv.parent.parent.goto_info_page(rv.data[index])
+            rv.parent.parent.goto_info_page(rv.data[index]["url"])
 
 class BottomControlBar(BoxLayout):
     library_btn = ObjectProperty(None)

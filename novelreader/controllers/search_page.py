@@ -27,10 +27,9 @@ class SearchPage(Screen):
         self.repo = repository
 
     def goto_info_page(self, url):        
-        # get offline data on novel
         novel = self.repo.get_novel(url, offline=True)
-        chapters = self.repository.get_chapters(url)
-        meta = self.repository.get_meta(url)
+        chapters = self.repo.get_chapters(url, offline=True)
+        meta = self.repo.get_meta(url, offline=True)
 
         self.manager.get_screen("info_page").open(Novel(
             url=novel.url,
