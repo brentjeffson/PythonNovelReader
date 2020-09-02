@@ -45,37 +45,19 @@ class InfoPage(Screen):
         threading.Thread(target=self.download_work, args=(novel.thumbnail,)).start()
         self.update_widgets(novel)
 
-    def add_to_library(self):
-        """Add Current Instance Of Novel To Database"""
-        novel = self.repo.get_novel(self.novel.url, offline=True)
-        if novel is None:
-            self.repo.insert_novel(self.novel)
-            self.repo.insert_meta(self.novel.url, self.novel.meta)
-            self.repo.insert_chapters(self.novel.url, self.novel.chapters)
-            self.repo.save()
-            
-            plog(["added to library"], self.ids.title.text)
-        else:
-            plog(["in library"], self.ids.title.text)
-    
-    def download_work(self, url: str):
-        with requests.Session() as session:
-            download_thumbnail(session, url)
-
     def update_widgets(self, novel: Novel):
         """Update All Widgets"""
-        if novel:
-            self.ids.title.text = novel.title
-            self.ids.authors.value = ', '.join(novel.meta.authors)
-            self.ids.genres.value = ', '.join(novel.meta.genres)
-            self.ids.status.value = novel.meta.status.name
-            self.ids.release_date.value = novel.meta.release_date
-            self.ids.rating.value = str(novel.meta.rating)
-            dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
-            self.ids.chapter_list.data = dict_chapters
+        self.ids.title.text = novel.title
+        self.ids.authors.value = ', '.join(novel.meta.authors)
+        self.ids.genres.value = ', '.join(novel.meta.genres)
+        self.ids.status.value = novel.meta.status.name
+        self.ids.release_date.value = novel.meta.release_date
+        self.ids.rating.value = str(novel.meta.rating)
+        dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in novel.chapters]
+        self.ids.chapter_list.data = dict_chapters
 
-            if thumbnail_path(novel.thumbnail).exists():
-                self.ids.thumbnail.source = str(thumbnail_path(novel.thumbnail))
+        if thumbnail_path(novel.thumbnail).exists():
+            self.ids.thumbnail.source = str(thumbnail_path(novel.thumbnail))
 
     def update_chapters(self, url: str):
         """Update Chapters Of Novel"""
@@ -91,7 +73,24 @@ class InfoPage(Screen):
         content = self.repo.get_chapter_content(url)
         self.manager.get_screen("reader_page").update_content(content)
         self.manager.current = "reader_page"
-    
+
+    def add_to_library(self):
+        """Add Current Instance Of Novel To Database"""
+        novel = self.repo.get_novel(self.novel.url, offline=True)
+        if novel is None:
+            self.repo.insert_novel(self.novel)
+            self.repo.insert_meta(self.novel.url, self.novel.meta)
+            self.repo.insert_chapters(self.novel.url, self.novel.chapters)
+            self.repo.save()
+
+            plog(["added to library"], self.ids.title.text)
+        else:
+            plog(["in library"], self.ids.title.text)
+
+    def download_work(self, url: str):
+        with requests.Session() as session:
+            download_thumbnail(session, url)    
+
 class ChapterItem(Button):
     """Chapter list item"""
     url = StringProperty()
