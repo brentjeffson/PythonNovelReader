@@ -32,7 +32,7 @@ class LibraryPage(Screen):
     def on_start(self, repository: Repository):
         plog(["on start"], "library_page")
         self.repo = repository
-        Clock.schedule_interval(lambda dt: self.update_library(), 1*60)
+        Clock.schedule_interval(lambda dt: self.update_library(), 1*5)
 
         # load saved novels in database
         novels = self.repo.get_novels()
@@ -47,7 +47,7 @@ class LibraryPage(Screen):
         
     def update_library(self):
         """Update Novels Library From `novels`"""
-        self.novellist.data.clear()
+        self.novellist.data = []
         novels = self.repo.get_novels()
         for novel in novels:
             self.novellist.data.append({
