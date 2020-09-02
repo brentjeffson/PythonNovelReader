@@ -37,7 +37,8 @@ class MainApp(App):
         # initialize page
         self.root.get_screen("library_page").on_start(repository)
         self.root.get_screen("info_page").on_start(repository)
-        
+        self.root.get_screen("search_page").on_start(repository)
+
     def check_resize(self, instance, x, y):
         # resize X
         print(Window.size)
