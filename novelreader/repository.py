@@ -66,7 +66,7 @@ class Repository:
             item = self.__get_offline_item(target, target_type)
         else:
             try: 
-                self.__get_online_item(target, target_type)
+                item = self.__get_online_item(target, target_type)
             except Exception as ex:
                 item = self.__get_offline_item(target, target_type)
                 plog(["exception", "get_item"], ex)
