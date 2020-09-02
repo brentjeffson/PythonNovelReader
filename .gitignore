@@ -8,3 +8,5 @@ test.db
 novelreader/public/
 
 *.code-workspace
+
+.idea/
