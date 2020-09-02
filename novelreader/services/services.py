@@ -61,7 +61,7 @@ class Services:
     def fetch_content(self, chapter_url: str) -> str:
         markup = Services.fetch_markup(self.__session, chapter_url)
         soup = parse_markup(markup)
-        parser = identify_parser(url)
+        parser = identify_parser(chapter_url)
         content = parser.get_content(soup)
         return content
         
