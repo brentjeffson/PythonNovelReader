@@ -29,7 +29,16 @@ class SearchPage(Screen):
     def goto_info_page(self, url):        
         # get offline data on novel
         novel = self.repo.get_novel(url, offline=True)
-        self.manager.get_screen("info_page").open(novel)
+        chapters = self.repository.get_chapters(url)
+        meta = self.repository.get_meta(url)
+
+        self.manager.get_screen("info_page").open(Novel(
+            url=novel.url,
+            title=novel.title,
+            thumbnail=novel.thumbnail,
+            meta=meta,
+            chapters=chapters
+        ))
         self.manager.current = "info_page"
 
     def update_search_list(self, novels: {}):

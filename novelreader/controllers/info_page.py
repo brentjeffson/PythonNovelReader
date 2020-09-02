@@ -36,37 +36,23 @@ class InfoPage(Screen):
     
     def on_start(self, repository: Repository):
         """Initialize Required Variables"""
-        self.repository = repository
+        self.repo = repository
 
-    def open(self, url: str, offline=False):
+    def open(self, novel):
         """Opens novel `url`"""
-        # get required data to update variables
-        novel = self.repository.get_novel(url)
-        chapters = self.repository.get_chapters(url)
-        meta = self.repository.get_meta(url)
-
+        self.novel = novel
         # download thumbnail
         threading.Thread(target=self.download_work, args=(novel.thumbnail,)).start()
-
-        # update widgets
-        if novel and chapters and meta:
-            self.novel = Novel(
-                url=novel.url,
-                title=novel.title,
-                thumbnail=novel.thumbnail,
-                meta=meta,
-                chapters=chapters
-            )
-            self.update_widgets(self.novel)
+        self.update_widgets(novel)
 
     def add_to_library(self):
         """Add Current Instance Of Novel To Database"""
-        novel = self.repository.get_novel(self.novel.url, offline=True)
+        novel = self.repo.get_novel(self.novel.url, offline=True)
         if novel is None:
-            self.repository.insert_novel(self.novel)
-            self.repository.insert_meta(self.novel.url, self.novel.meta)
-            self.repository.insert_chapters(self.novel.url, self.novel.chapters)
-            self.repository.save()
+            self.repo.insert_novel(self.novel)
+            self.repo.insert_meta(self.novel.url, self.novel.meta)
+            self.repo.insert_chapters(self.novel.url, self.novel.chapters)
+            self.repo.save()
             
             plog(["added to library"], self.ids.title.text)
         else:
@@ -93,7 +79,7 @@ class InfoPage(Screen):
 
     def update_chapters(self, url: str):
         """Update Chapters Of Novel"""
-        new_chapters, num_new_chapter = self.repository.update_chapters(url)
+        new_chapters, num_new_chapter = self.repo.update_chapters(url)
         
         if new_chapters:
             dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in new_chapters]
@@ -102,7 +88,7 @@ class InfoPage(Screen):
         plog(["# Of New Chapters"], num_new_chapter)
         
     def read_chapter(self, url):
-        content = self.repository.get_chapter_content(url)
+        content = self.repo.get_chapter_content(url)
         self.manager.get_screen("reader_page").update_content(content)
         self.manager.current = "reader_page"
     
