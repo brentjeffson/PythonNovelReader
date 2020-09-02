@@ -5,13 +5,13 @@ from wescrape.models.novel import Novel, Chapter, Meta
 
 class Services:
 
-    INTANCE = None
+    INSTANCE = None
 
     @classmethod
     def build(cls, session: requests.Session):
-        if cls.INTANCE is None:
-            cls.INTANCE = Services(session)
-        return cls.INTANCE
+        if cls.INSTANCE is None:
+            cls.INSTANCE = Services(session)
+        return cls.INSTANCE
 
     @classmethod
     def instance(cls):
