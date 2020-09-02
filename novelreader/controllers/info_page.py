@@ -39,10 +39,11 @@ class InfoPage(Screen):
         self.repo = repository
 
     def open(self, novel):
-        """Opens novel `url`"""
+        # set novel as property
         self.novel = novel
         # download thumbnail
         threading.Thread(target=self.download_work, args=(novel.thumbnail,)).start()
+        # update widgets
         self.update_widgets(novel)
 
     def update_widgets(self, novel: Novel):
