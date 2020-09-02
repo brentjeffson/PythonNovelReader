@@ -38,7 +38,7 @@ class InfoPage(Screen):
         """Initialize Required Variables"""
         self.repository = repository
 
-    def open(self, url: str):
+    def open(self, url: str, offline=False):
         """Opens novel `url`"""
         # get required data to update variables
         novel = self.repository.get_novel(url)
