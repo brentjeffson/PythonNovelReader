@@ -4,7 +4,7 @@ from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from wescrape.models.novel import Website
+from wescrape.models.novel import Website, Novel
 from wescrape.helpers import identify_parser, search
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
 from novelreader.helpers import plog
@@ -26,11 +26,13 @@ class SearchPage(Screen):
     def on_start(self, repository):
         self.repo = repository
 
-    def goto_info_page(self, url):        
-        novel = self.repo.get_novel(url, offline=True)
-        chapters = self.repo.get_chapters(url, offline=True)
-        meta = self.repo.get_meta(url, offline=True)
+    def goto_info_page(self, url):
+        # get novel data from web
+        novel = self.repo.get_novel(url)
+        chapters = self.repo.get_chapters(url)
+        meta = self.repo.get_meta(url)
 
+        # open info page then send novel data
         self.manager.get_screen("info_page").open(Novel(
             url=novel.url,
             title=novel.title,
