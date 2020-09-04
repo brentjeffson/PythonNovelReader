@@ -76,60 +76,43 @@ class Repository:
         """Get All Novels From Database"""
         return self.__database.select_novels()
     
-    def get_novel(self, url: str, offline: bool = False) -> Novel:
-        return self.__get_item(url, Novel, offline)
+    def get_novel(self, novel_url: str, offline: bool = False) -> Novel:
+        return self.__get_item(novel_url, Novel, offline)
 
-    def get_chapter(self, url: str, offline = False) -> Chapter:
+    def get_chapter(self, chapter_url: str, offline = False) -> Chapter:
         """Get a single chapter from database or web"""
-        chapters = self.__get_item(url, Chapter, offline)
+        chapters = self.__get_item(chapter_url, Chapter, offline)
         chapter = None
         if chapters:
             for chapter in chapters:
-                if chapter.url == url:
+                if chapter.url == chapter_url:
                     return chapter
         return chapter
 
+    def get_chapters(self, novel_url: str, offline: bool = False):
+        return self.__get_item(novel_url, Chapter, offline)
 
-    def get_chapters(self, url: str, offline: bool = False):
-        # get from web
-        chapters = []
-        if offline:
-            return self.__database.select_chapters(url)
-        
-        try: 
-            chapters = self.__service.fetch_chapters(url)
-            if chapters is not None:
-                return chapters
-        except Exception as ex:
-            plog(["exception", "get_chapters"], ex)
-        finally:
-            # get from database
-            chapters = self.__database.select_chapters(url)
-        return chapters
+    def get_meta(self, novel_url, offline: bool = False):
+        return self.__get_item(novel_url, Meta, offline)
 
-    def get_meta(self, url, offline: bool = False):
-        # get from web
-        return self.__get_item(url, Meta, offline)
-
-    def get_chapter_content(self, url: str) -> str:
-        # get content
-        content = self.__service.fetch_content(url)
+    def get_chapter_content(self, chapter_url: str) -> str:
+        content = self.__service.fetch_content(chapter_url)
         return content
 
     def update_chapter(self, chapter: Chapter):
         """Update chapter in database whose `url` is equal to `chapter.url`"""
         self.__database.update_chapter(chapter)
 
-    def update_chapters(self, url: str):
+    def update_chapters(self, chapter_url: str):
         """Fetch chapters of novel from web, return updated chapters"""
-        new_chapters = self.__service.fetch_chapters(url)
+        new_chapters = self.__service.fetch_chapters(chapter_url)
         num_new_chapters = 0
         if new_chapters: 
-            saved_chapters = self.__database.select_chapters(url)
+            saved_chapters = self.__database.select_chapters(chapter_url)
             for new_chapter in new_chapters:
                 for saved_chapter in saved_chapters:
                     if new_chapter.url != saved_chapter.url:
-                        self.__database.insert_chapter(url, new_chapter)
+                        self.__database.insert_chapter(chapter_url, new_chapter)
                         num_new_chapters += 1
         return new_chapters, num_new_chapters
     
