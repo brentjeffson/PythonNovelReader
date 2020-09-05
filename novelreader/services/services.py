@@ -54,6 +54,17 @@ class Services:
         chapters = self.__fetch(Chapter, novel_url)
         return chapters if chapters is not None else []
 
+    def fetch_chapter(self, novel_url: str, chapter_url: str) -> Chapter:
+        """Fetches chapter from novel `novel_url` where chapter is `chapter_url`."""
+        chapter = None
+        chapters = self.__fetch(Chapter, novel_url)
+        if chapters:
+            for c in chapters:
+                if c.url == chapter_url:
+                    chapter = c
+                    break
+        return chapter
+
     def fetch_meta(self, novel_url: str) -> Meta:
         meta = self.__fetch(Meta, novel_url)
         return meta
