@@ -103,17 +103,24 @@ class Repository:
         """Update chapter in database whose `url` is equal to `chapter.url`"""
         self.__database.update_chapter(chapter)
 
-    def update_chapters(self, chapter_url: str):
-        """Fetch chapters of novel from web, return updated chapters"""
-        new_chapters = self.__service.fetch_chapters(chapter_url)
+    def update_chapters(self, novel_url: str):
+        """Fetch chapters of Novel `novel_url` from web, save new chapters to database."""
+        new_chapters = self.__service.fetch_chapters(novel_url)
+        saved_chapters = self.__database.select_chapters(novel_url)
+        # remove content on saved chapters
+        for chapter in saved_chapters:
+            saved_chapters.content = ""
+
         num_new_chapters = 0
-        if new_chapters: 
-            saved_chapters = self.__database.select_chapters(chapter_url)
+        if saved_chapters:
+            # save chapters not in old chapters
             for new_chapter in new_chapters:
-                for saved_chapter in saved_chapters:
-                    if new_chapter.url != saved_chapter.url:
-                        self.__database.insert_chapter(chapter_url, new_chapter)
-                        num_new_chapters += 1
+                if new_chapter not in saved_chapters:
+                    # saved new chapter
+                    self.__database.insert_chapter(novel_url, new_chapter)
+                    num_new_chapters += 1
+                    
+        plog(["number of new chapters"], len(num_new_chapters))
         return new_chapters, num_new_chapters
     
     def insert_novel(self, novel: Novel):
