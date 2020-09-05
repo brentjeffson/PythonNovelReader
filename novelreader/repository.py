@@ -90,7 +90,14 @@ class Repository:
         return chapter
 
     def get_chapters(self, novel_url: str, offline: bool = False):
-        return self.__get_item(novel_url, Chapter, offline)
+        chapters = []
+        if offline:
+            chapters = self.__database.select_chapters(novel_url)
+        try:
+            chapters = self.__service.fetch_chapters()
+        except Exception as ex:
+            chapters = self.__database.select_chapters(novel_url)
+        return 
 
     def get_meta(self, novel_url, offline: bool = False):
         return self.__get_item(novel_url, Meta, offline)
