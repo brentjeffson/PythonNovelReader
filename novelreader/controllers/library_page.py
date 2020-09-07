@@ -10,10 +10,9 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from pathlib import Path
-from wescrape.models.novel import Novel
 from novelreader.repository import Repository
 from novelreader.services import download_thumbnail
-from novelreader.models import Database
+from novelreader.models import Database, Novel
 from novelreader.helpers import plog, thumbnail_path
 import requests
 import threading
@@ -53,15 +52,13 @@ class LibraryPage(Screen):
             meta=meta,
             chapters=chapters
         ))
-        self.manager.get_screen('info_page').open(novel)
-        self.manager.current = 'info_page'
+        self.manager.current = "info_page"
 
     def download_thumbnail(self, url):
         with requests.Session() as session:
             download_thumbnail(session, url)
         
     def update_library(self):
-        """Update Novels Library From `novels`"""
         self.novellist.data = []
         novels = self.repo.get_novels()
         for novel in novels:
@@ -72,9 +69,6 @@ class LibraryPage(Screen):
             })
         plog(["loaded", str(len(novels))], 'novels')
         
-    def get_selected_novel(self):
-        return self.selected_novel
-
 # recyclerview
 class NovelList(RecycleView):
     novellist = ObjectProperty(None)

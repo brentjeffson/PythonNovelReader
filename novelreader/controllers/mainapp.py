@@ -24,7 +24,7 @@ class MainApp(App):
         services = Services.build(session)
 
         # create database instance
-        database = Database(str(Path("novelreader", "public", "novels.db")))
+        database = Database.build(str(Path("novelreader", "public", "novels.db")))
 
         # create repository
         repository = Repository.build(services, database)

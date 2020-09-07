@@ -6,10 +6,9 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from wescrape.helpers import identify_parser, identify_status
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
-from wescrape.models.novel import Novel, Meta, Website, Status, Chapter
 from novelreader.services import download_thumbnail
 from novelreader.repository import Repository
-from novelreader.models import Database
+from novelreader.models import Database, Novel, Chapter, Meta, Website, Status
 from novelreader.helpers import plog, thumbnail_path
 from pathlib import Path
 from functools import partial
@@ -70,26 +69,36 @@ class InfoPage(Screen):
 
         plog(["# Of New Chapters"], num_new_chapter)
         
-    def read_chapter(self, url):
-        content = self.repo.get_chapter_content(url)
-        chapter = self.repo.get_chapter(url)
-        self.repo.update_chapter(Chapter(
-            id=chapter.id,
-            url=chapter.url,
-            title=chapter.title,
-            content=chapter.content
-        ))
-        self.manager.get_screen("reader_page").update_content(content)
-        self.manager.current = "reader_page"
+    def read_chapter(self, chapter_url):
+        # check first if chapter has content in database
+        chapter = self.repo.get_chapter()
+
+        if chapter:
+            # chapter in database
+            if not chapter.has_read:
+                # chapter not yet read
+                self.repo.update_chapter_has_read(chapter.url, True)
+
+            if not chapter.content:
+                # check if chapter has not content
+                # get content from web
+                content = self.repo.get_chapter_content(chapter_url)
+                self.repo.update_chapter_content(chapter_url, content)
+                chapter.content = content
+            if chapter.content:
+                # makes sure that chapter has content
+                self.manager.get_screen("reader_page").update_content(chapter.content)
+                self.manager.current = "reader_page"
+            else:
+                plog(["missing", "content"], chapter_url)
 
     def add_to_library(self):
         """Add Current Instance Of Novel To Database"""
         novel = self.repo.get_novel(self.novel.url, offline=True)
         if novel is None:
-            self.repo.insert_novel(self.novel)
-            self.repo.insert_meta(self.novel.url, self.novel.meta)
-            self.repo.insert_chapters(self.novel.url, self.novel.chapters)
-            self.repo.save()
+            self.repo.save_novel(self.novel)
+            self.repo.save_meta(self.novel.url, self.novel.meta)
+            self.repo.save_chapters(self.novel.url, self.novel.chapters)
 
             plog(["added to library"], self.ids.title.text)
         else:

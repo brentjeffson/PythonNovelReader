@@ -2,11 +2,8 @@ from kivy.app import Builder
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.screenmanager import Screen
-from kivy.uix.label import Label
 from kivy.uix.button import Button
-from wescrape.models.novel import Website, Novel
-from wescrape.helpers import identify_parser, search
-from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
+from novelreader.models import Website, Novel
 from novelreader.helpers import plog
 from pathlib import Path
 from functools import partial
@@ -53,13 +50,13 @@ class SearchPage(Screen):
             self.search_list_recycle.data.clear()
 
             with requests.Session() as session:
-                thread = threading.Thread(target=self.search_work, args=(session, self.search_input.text, Website.BOXNOVELCOM))
+                thread = threading.Thread(target=self.search_work, args=(self.search_input.text, Website.BOXNOVELCOM))
                 thread.start()
         else:
             plog(["already searching"], self.search_input.text)
 
-    def search_work(self, session: requests.Session, keyword: str, website: Website):
-        novels = search(session, keyword, website)
+    def search_work(self, keyword: str, website: Website):
+        novels = self.repo.search(keyword, website)
         if novels:
             plog(["# Of Searched"], len(novels))
             self.update_search_list(novels)
