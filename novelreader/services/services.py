@@ -1,7 +1,7 @@
 import requests
 from pathlib import Path
 from wescrape.helpers import identify_parser, parse_markup
-from wescrape.models.novel import Novel, Chapter, Meta
+from novelreader.models import Novel, Chapter, Meta
 
 class Services:
 
@@ -20,9 +20,13 @@ class Services:
     def __init__(self, session: requests.Session):
         self.__session = session
 
+    @property
+    def session(self):
+        return self.__session
+
     def __fetch(self, item_type, url: str):
         parser = identify_parser(url)
-        markup = Services.fetch_markup(self.__session, url)
+        markup = self.fetch_markup(url)
         item = None
         if markup is not None and parser is not None:
             soup = parse_markup(markup)
@@ -39,6 +43,13 @@ class Services:
                 )
             if item_type == Chapter:
                 item = parser.get_chapters(soup)
+                # convert to new Chapter Object
+                temp_items = []
+                for i in item:
+                    temp_items.append(
+                        Chapter(i.title, i.url, i.id, i.content)
+                    )
+                item = temp_items
             if item_type == Meta:
                 item = parser.get_meta(soup)
         return item
@@ -70,15 +81,14 @@ class Services:
         return meta
 
     def fetch_content(self, chapter_url: str) -> str:
-        markup = Services.fetch_markup(self.__session, chapter_url)
+        markup = self.fetch_markup(chapter_url)
         soup = parse_markup(markup)
         parser = identify_parser(chapter_url)
         content = parser.get_content(soup)
         return content
         
-    @staticmethod
-    def fetch_markup(session: requests.Session, markup_url: str) -> str:
-        resp = session.get(markup_url)
+    def fetch_markup(self, markup_url: str) -> str:
+        resp = self.__session.get(markup_url)
         markup = None
         if resp.ok:
             markup = resp.text

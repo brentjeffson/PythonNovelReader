@@ -1,7 +1,12 @@
 import sqlite3 as sql
-from novelreader.helpers import plog
+from dataclasses import dataclass
+from novelreader.helpers import plog, show
 from wescrape.helpers import identify_status
-from wescrape.models.novel import Meta, Chapter, Meta, Novel
+from wescrape.models.novel import Novel, Chapter, Meta, Website, Status
+
+@dataclass
+class Chapter(Chapter):
+    has_read: bool = False
 
 class Database:
     INSTANCE = None
@@ -45,11 +50,79 @@ class Database:
     @property
     def conn(self):
         return self.__conn
+
+    # @show
+    def __conditions_builder(self, conditions: [(str, any)]):  
+        if type(conditions) == list:
+            values = tuple([c[1] for c in conditions]) 
+            part = " AND ".join([f"{c[0].upper()} = ?" for c in conditions])
+            conditions = " ".join(["WHERE", part]) if len(conditions) > 0 else ""
+        else: 
+            values = (conditions[1],)
+            conditions = f"where {conditions[0].upper()} = ?"
+        return conditions, values
+
+    # @show
+    def __select(self, table: str, cols:[str] = ["*",], conditions: [(str, any)] = []):
+        cols = " ".join(cols) if type(cols) == list else cols
+        conditions, values = self.__conditions_builder(conditions)
+        statement = f"""SELECT {cols} FROM {table} {conditions}""".strip().upper()
+        rows = self.__conn.execute(statement, values)
+        return rows
+
+    def __update(self, table: str, cols=[str], conditions=[(str, any)]):
+        valid_tables = ["novels", "chapters", "metas"]
+        if table.lower() not in valid_tables:
+            return None
+        cols = ", ".join(cols) if type(cols) == list else cols
+        conditions, values = self.__conditions_builder(conditions)
+        statement = f"UPDATE {table} SET {cols} {conditions}".strip().upper()
+        self.__conn.execute(statement, values)
+
+    def __convert_row(self, row: dict, obj_type):
+        converted_row = None
+        if row:
+            try:
+                if obj_type == Novel:
+                    converted_row = Novel(
+                        url=row["url"],
+                        title=row["title"],
+                        thumbnail=row["thumbnail"]
+                    )
+                elif obj_type == Chapter:
+                    converted_row = Chapter(
+                        id=row["chapter_id"],
+                        url=row["url"],
+                        title=row["title"],
+                        content=row["content"],
+                        has_read=bool(row["has_read"])
+                    )
+                elif obj_type == Meta:
+                    converted_row = Meta(
+                        authors=row["authors"].split(", "),
+                        genres=row["genres"].split(", "),
+                        rating=row["rating"],
+                        release_date=row["release_date"],
+                        status=identify_status(row["status"]),
+                        description=row["description"],
+                    )
+            except Exception as ex:
+                raise ex
+        return converted_row
+
+    def __convert_rows(self, rows: [dict], convert_type):
+        converted_rows = []
+        if rows:
+            for row in rows:
+                converted_row = self.__convert_row(row, convert_type)
+                if converted_row:
+                    converted_rows.append(converted_row)
+        return converted_rows
         
     # create functions
     def create_novels_table(self):
         statement = """CREATE TABLE IF NOT EXISTS NOVELS(
-            URL TEXT PRIMARY KEY,
+            URL TEXT PRIMARY KEY UNIQUE,
             TITLE TEXT NOT NULL,
             THUMBNAIL TEXT NOT NULL);
         """
@@ -110,6 +183,7 @@ class Database:
 
     def insert_chapter(self, novel_url: str, chapter: Chapter):
         statement = """INSERT INTO CHAPTERS (CHAPTER_ID, URL, TITLE, CONTENT, NOVEL_URL) VALUES(?, ?, ?, ?, ?);"""
+        
         if type(chapter) == Chapter:
             chapter = chapter.__dict__
 
@@ -122,111 +196,75 @@ class Database:
         )
         self.__conn.execute(statement, values)
 
-
     def update_chapter(self, chapter: Chapter):
         """Update cols of selected chapter whose col URL is `url`"""
-        statement = """UPDATE CHAPTERS 
-        SET CHAPTER_ID = ?,
-            TITLE = ?,
-            CONTENT = ?
-        WHERE URL = ?;"""
-
         if type(chapter) == Chapter:
             chapter = chapter.__dict__
+        self.update_chapter_v2(chapter)
+        # statement = """UPDATE CHAPTERS 
+        # SET CHAPTER_ID = ?,
+        #     TITLE = ?,
+        #     CONTENT = ?,
+        #     HAS_READ = ?
+        # WHERE URL = ?;"""
 
-        values = (
-            chapter["id"],
-            chapter["title"],
-            chapter["content"],
-            chapter["url"]
+        # values = (
+        #     chapter["id"],
+        #     chapter["title"],
+        #     chapter["content"],
+        #     chapter["has_read"],
+        #     chapter["url"]
+        # )
+
+        # self.__conn.execute(statement, values)
+
+    def update_chapter_v2(self, chapter: Chapter):
+        self.__update(
+            "chapters",
+            ["content"],
+            ("url", chapter["url"])
+        )
+    
+    def update_meta(self, meta: Meta):
+        self.__update(
+            "metas",
+            ["status"],
+            [("novel_url", meta.novel_url)]
         )
 
-        self.__conn.execute(statement, values)
-
-    def __select(self, cols: list, table: str, where: list = None, where_val: tuple = ()):
-        if len(cols) == 0:
-            cols = ["*"]
-        # ([], "novels", ["url"], (novel_url,))
-        statement = f"SELECT {' '.join(cols)} FROM {table};"
-
-        if where is not None and type(where) == list and len(where_val) > 0 and type(where_val) == tuple:
-            statement = f"SELECT {' '.join(cols)} FROM {table} WHERE {' '.join( i + ' == ?' for i in where )};".upper()
-            print(statement)
-            
-        return self.__conn.execute(statement, where_val)
-
-    def __convert_row(self, row: dict, obj_type):
-        converted_row = None
-        if row:
-            try:
-                if obj_type == Novel:
-                    converted_row = Novel(
-                        url=row["url"],
-                        title=row["title"],
-                        thumbnail=row["thumbnail"]
-                    )
-                elif obj_type == Chapter:
-                    converted_row = Chapter(
-                        id=row["chapter_id"],
-                        url=row["url"],
-                        title=row["title"],
-                        content=row["content"],
-                    )
-                elif obj_type == Meta:
-                    converted_row = Meta(
-                        authors=row["authors"].split(", "),
-                        genres=row["genres"].split(", "),
-                        rating=row["rating"],
-                        release_date=row["release_date"],
-                        status=identify_status(row["status"]),
-                        description=row["description"],
-                    )
-            except Exception as ex:
-                raise ex
-        return converted_row
-
-    def __convert_rows(self, rows: [dict], convert_type):
-        converted_rows = []
-        if rows:
-            for row in rows:
-                converted_row = self.__convert_row(row, convert_type)
-                if converted_row:
-                    converted_rows.append(converted_row)
-        return converted_rows
-
     def select_novels(self) -> [Novel]:
-        cur = self.__select([], "novels")
+        cur = self.__select("novels")
         novel_rows = cur.fetchall()
+        # novel_rows = self.__conn.execute("""SELECT * FROM NOVELS""").fetchall()
         novels = self.__convert_rows(novel_rows, Novel)
         return novels
 
-
     def select_novel(self, novel_url) -> Novel:
-        cur = self.__select([], "novels", ["url"], (novel_url,))
+        cur = self.__select("novels", conditions=[("url", novel_url)])
         novel_row = cur.fetchone()
         novel = self.__convert_row(novel_row, Novel)
         return novel
 
     def select_chapters(self, novel_url: str) -> [Chapter]:
-        cur = self.__select([], "chapters", ["novel_url"], (novel_url,))
+        cur = self.__select("chapters", conditions=("novel_url", novel_url))
         chapter_rows = cur.fetchall()
         chapters = self.__convert_rows(chapter_rows, Chapter)
         return chapters
 
-    def select_chapter(self, url: str) -> Chapter:
-        cur = self.__select([], "chapters", ["url"], (url,))
+    def select_chapter(self, chapter_url: str) -> Chapter:
+        cur = self.__select("chapters", conditions=("url", chapter_url))
         chapter_row = cur.fetchone()
         chapter = self.__convert_row(chapter_row, Chapter)
         return chapter
 
     def select_metas(self) -> [Meta]:
-        cur = self.__select([], "metas")
+        cur = self.__select("metas")
         meta_rows = cur.fetchall()
         metas = self.__convert_rows(meta_rows, Meta)
         return metas
 
     def select_meta(self, novel_url) -> Meta:
-        cur = self.__select([], "metas", ["novel_url"], (novel_url,))
+        cur = self.__select("metas", conditions=("novel_url", novel_url))
         meta_row = cur.fetchone()
         meta = self.__convert_row(meta_row, Meta)
         return meta
