@@ -40,8 +40,12 @@ class SearchPage(Screen):
         self.manager.current = "info_page"
 
     def update_search_list(self, novels: {}):
+        self.search_list_recycle.data = []
+        novel_data = []
         for novel in novels:
-            self.search_list_recycle.data.append({"text": novel.title, "url": novel.url})
+            novel_data.append({"text": novel.title, "url": novel.url})
+        if novel_data:
+            self.search_list_recycle.data = novel_data
     
     def start_search(self):
         if not self.__searching:
