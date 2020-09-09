@@ -1,12 +1,7 @@
+.vscode
+*.db
+*.code-workspace
 __pycache__
 tests
-.vscode
-novelreader/public/novel.db
-
-test.db
-
-novelreader/public/
-
-*.code-workspace
-
 .idea/
+novelreader/public
