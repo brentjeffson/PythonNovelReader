@@ -1,3 +1,4 @@
+#: import ButtonColor novelreader.helpers.ButtonColor
 <SearchPage>:
     name: 'search_page'
     search_list_recycle: search_list
@@ -9,17 +10,18 @@
 
         BoxLayout:
             orientation: 'horizontal'
-            size_hint: 1, .05
+            size_hint: 1, .1
 
             TextInput:
                 id: search_input
+                font_size: '32sp'
                 multiline: False
-                text: 'mini'
                 hint_text: 'Title Of Novel'
                 on_text_validate: root.start_search()
 
             Button:
                 text: 'Search'
+                background_color: ButtonColor.PRIMARY_DEFAULT.value
                 on_press: root.start_search()
                 size_hint: .1, 1
 
@@ -36,4 +38,5 @@
                 height: self.minimum_height
 
 <SearchItem>:
+    background_color: ButtonColor.SECONDARY_DEFAULT.value
     on_press: root.browse()

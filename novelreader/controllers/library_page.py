@@ -47,7 +47,7 @@ class LibraryPage(Screen):
             thumbnail=novel.thumbnail,
             meta=meta,
             chapters=chapters
-        ), True)
+        ))
         self.manager.parent.open_page("info_page")
 
     def download_thumbnail(self, url):

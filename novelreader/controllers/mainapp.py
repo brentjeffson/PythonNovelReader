@@ -38,9 +38,12 @@ class MainWindow(BoxLayout):
         self.init_pages()
         self.init_bottom_navigation()
         # END INITIALIZERS
+    
+    def init_pages(self):
+        pass
 
     def init_bottom_navigation(self):
-         # bind bottom navigation buttons
+        # bind bottom navigation buttons
         self.bottom_navigation.ids.library_btn.bind(on_press=lambda _: self.open_page("library_page"))
         self.bottom_navigation.ids.search_btn.bind(on_press=lambda _: self.open_page("search_page"))
         self.bottom_navigation.ids.downloads_btn.bind(on_press=lambda _: self.open_page("downloads_page"))

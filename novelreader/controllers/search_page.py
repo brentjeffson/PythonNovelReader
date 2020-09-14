@@ -38,7 +38,7 @@ class SearchPage(Screen):
             thumbnail=novel.thumbnail,
             meta=meta,
             chapters=chapters
-        ), False)
+        ))
         self.manager.current = "info_page"
 
     def update_search_list(self, novels: {}):

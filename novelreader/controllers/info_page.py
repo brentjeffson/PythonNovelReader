@@ -33,10 +33,9 @@ class InfoPage(Screen):
     ))
     
     def on_start(self, repository: Repository):
-        """Initialize Required Variables"""
         self.repo = repository
 
-    def open(self, novel, offline):
+    def open(self, novel):
         # set novel as property
         self.novel = novel
         # download thumbnail
@@ -44,7 +43,6 @@ class InfoPage(Screen):
         # update widgets
         self.update_widgets(novel)
         # check if novel is in database
-        self.ids.add_novel_btn.disabled = True if self.repo.get_novel(novel.url) is not None else False
 
     def update_widgets(self, novel: Novel):
         """Update All Widgets"""
@@ -59,16 +57,7 @@ class InfoPage(Screen):
 
         if thumbnail_path(novel.thumbnail).exists():
             self.ids.thumbnail.source = str(thumbnail_path(novel.thumbnail))
-
-    def update_chapters(self, url: str):
-        """Update Chapters Of Novel"""
-        new_chapters, num_new_chapter = self.repo.update_chapters(url)
-        
-        if new_chapters:
-            dict_chapters = [{"text": chapter.title, "url": chapter.url} for chapter in new_chapters]
-            self.ids.chapter_list.data = dict_chapters
-
-        plog(["# Of New Chapters"], num_new_chapter)
+        self.ids.add_novel_btn.disabled = True if self.repo.get_novel(novel.url, True) else False
         
     def read_chapter(self, chapter_url):
         # check first if chapter has content in database

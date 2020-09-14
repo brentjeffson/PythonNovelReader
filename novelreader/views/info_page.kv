@@ -1,3 +1,4 @@
+#: import ButtonColor novelreader.helpers.ButtonColor
 <InfoPage>:
     name: 'info_page'
 
@@ -23,6 +24,7 @@
                 Button:
                     id: add_novel_btn
                     text: 'Add to library'
+                    background_color: ButtonColor.PRIMARY_DEFAULT.value
                     size_hint_y: 0.2
                     on_press: root.add_to_library()
 
@@ -70,6 +72,7 @@
                 height: self.minimum_height
 
 <ChapterItem>
+    background_color: ButtonColor.SECONDARY_DEFAULT.value
     on_press: root.read()
 
 <InfoItem>
