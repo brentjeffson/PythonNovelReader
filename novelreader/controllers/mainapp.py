@@ -10,7 +10,7 @@ from novelreader.controllers.search_page import SearchPage
 from novelreader.controllers.downloads_page import DownloadsPage
 from novelreader.controllers.reader_page import ReaderPage
 from novelreader.controllers.info_page import InfoPage
-from novelreader.helpers import DefaultButtonColor
+from novelreader.helpers import ButtonColor
 
 from pathlib import Path
 import sqlite3 as sql
@@ -35,9 +35,9 @@ class MainWindow(BoxLayout):
         # END REFERENCES
 
         # INTIALIZERS
+        self.init_pages()
         self.init_bottom_navigation()
         # END INITIALIZERS
-
 
     def init_bottom_navigation(self):
          # bind bottom navigation buttons
@@ -45,25 +45,25 @@ class MainWindow(BoxLayout):
         self.bottom_navigation.ids.search_btn.bind(on_press=lambda _: self.open_page("search_page"))
         self.bottom_navigation.ids.downloads_btn.bind(on_press=lambda _: self.open_page("downloads_page"))
         # set button background color
-        self.bottom_navigation.ids.library_btn.background_color = DefaultButtonColor.PRIMARY_DEFAULT.value
-        self.bottom_navigation.ids.search_btn.background_color = DefaultButtonColor.PRIMARY_DEFAULT.value
-        self.bottom_navigation.ids.downloads_btn.background_color = DefaultButtonColor.PRIMARY_DEFAULT.value
+        self.bottom_navigation.ids.library_btn.background_color = ButtonColor.PRIMARY_DEFAULT.value
+        self.bottom_navigation.ids.search_btn.background_color = ButtonColor.PRIMARY_DEFAULT.value
+        self.bottom_navigation.ids.downloads_btn.background_color = ButtonColor.PRIMARY_DEFAULT.value
 
         # set default active bottom navigation
-        self.bottom_navigation.ids.library_btn.background_color = DefaultButtonColor.PRIMARY_ACTIVE.value
+        self.bottom_navigation.ids.library_btn.background_color = ButtonColor.PRIMARY_ACTIVE.value
 
     def open_page(self, page_name):
         self.page_manager.current = page_name
-        self.bottom_navigation.ids.library_btn.background_color = DefaultButtonColor.PRIMARY_DEFAULT.value
-        self.bottom_navigation.ids.search_btn.background_color = DefaultButtonColor.PRIMARY_DEFAULT.value
-        self.bottom_navigation.ids.downloads_btn.background_color = DefaultButtonColor.PRIMARY_DEFAULT.value
+        self.bottom_navigation.ids.library_btn.background_color = ButtonColor.PRIMARY_DEFAULT.value
+        self.bottom_navigation.ids.search_btn.background_color = ButtonColor.PRIMARY_DEFAULT.value
+        self.bottom_navigation.ids.downloads_btn.background_color = ButtonColor.PRIMARY_DEFAULT.value
 
         if page_name == "library_page":
-            self.bottom_navigation.ids.library_btn.background_color = DefaultButtonColor.PRIMARY_ACTIVE.value
+            self.bottom_navigation.ids.library_btn.background_color = ButtonColor.PRIMARY_ACTIVE.value
         elif page_name == "search_page":
-            self.bottom_navigation.ids.search_btn.background_color = DefaultButtonColor.PRIMARY_ACTIVE.value
+            self.bottom_navigation.ids.search_btn.background_color = ButtonColor.PRIMARY_ACTIVE.value
         elif page_name == "downloads_page":
-            self.bottom_navigation.ids.downloads_btn.background_color = DefaultButtonColor.PRIMARY_ACTIVE.value
+            self.bottom_navigation.ids.downloads_btn.background_color = ButtonColor.PRIMARY_ACTIVE.value
 
 class MainApp(App):
 

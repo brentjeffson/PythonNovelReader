@@ -1,7 +1,7 @@
 from pathlib import Path
 from enum import Enum
 
-class DefaultButtonColor(Enum):
+class ButtonColor(Enum):
     PRIMARY_DEFAULT =  0.1725, 0.2431, 0.3137, 1
     PRIMARY_ACTIVE = 0.8274, 0.3294, 0.0, 1
     PRIMARY_HOVER = (1, 1, 1, 1)
