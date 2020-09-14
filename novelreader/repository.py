@@ -163,11 +163,15 @@ class Repository:
             resp = self.__service.session.post("https://boxnovel.com/wp-admin/admin-ajax.php", data=payload)
             if resp.ok:
                 for novel in resp.json()["data"]:
+                    if "error" in novel:
+                        break
+
                     novels.append(Novel(
                         title=novel["title"],
                         url=novel["url"],
                         thumbnail=""
                     ))
+                    
         elif website == Website.WUXIAWORLDCO:
             search_selector = "ul.result-list > li.list-item > a.list-img"
             keyword = keyword.replace(" ", "%20")

@@ -58,6 +58,7 @@ class SearchPage(Screen):
                 thread.start()
         else:
             plog(["already searching"], self.search_input.text)
+        self.search_input.text = ""
 
     def search_work(self, keyword: str, website: Website):
         novels = self.repo.search(keyword, website)

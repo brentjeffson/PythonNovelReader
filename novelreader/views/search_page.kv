@@ -13,8 +13,10 @@
 
             TextInput:
                 id: search_input
+                multiline: False
                 text: 'mini'
-                hint_text: 'https://boxnovel.com/novel/mini-world-of-endless-fun-awaits/'
+                hint_text: 'Title Of Novel'
+                on_text_validate: root.start_search()
 
             Button:
                 text: 'Search'
