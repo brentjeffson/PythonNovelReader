@@ -17,22 +17,18 @@ from novelreader.helpers import plog, thumbnail_path
 import requests
 import threading
 
-
 Builder.load_file(str(Path('novelreader/views/library_page.kv').absolute()))
 
 class LibraryPage(Screen):
     novellist = ObjectProperty(None)
-    bottom_controls = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(LibraryPage, self).__init__(**kwargs)
-        # self.__selected_novel = None
     
     def on_start(self, repository: Repository):
-        plog(["on start"], "library_page")
         self.repo = repository
         Clock.schedule_interval(lambda dt: self.update_library(), 1*60)
-
+        
         # load saved novels in database
         novels = self.repo.get_novels()
         if novels:
@@ -52,7 +48,7 @@ class LibraryPage(Screen):
             meta=meta,
             chapters=chapters
         ))
-        self.manager.current = "info_page"
+        self.manager.parent.open_page("info_page")
 
     def download_thumbnail(self, url):
         with requests.Session() as session:

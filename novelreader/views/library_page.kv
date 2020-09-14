@@ -2,7 +2,6 @@
 <LibraryPage>:
     name: 'library_page'
     novellist: novellist
-    bottom_controls: controls
 
     BoxLayout:
         orientation: 'vertical'
@@ -11,10 +10,6 @@
 
         NovelList:
             id: novellist
-
-        BottomControlBar:
-            id: controls
-
 
 <NovelList>:
     viewclass: 'NovelItem'
@@ -46,33 +41,3 @@
         text: root.title[:20]
         size_hint_y: None
         height: 120 * .3
-
-<BottomControlBar>:
-    orientation: 'horizontal'
-    size_hint: 1, .1
-    library_btn: library_btn
-    search_btn: search_btn
-    downloads_btn: downloads_btn
-
-    Button:
-        id: library_btn
-        text: 'Library'
-        background_normal: ''
-        background_color: .5, .2, .3, .5
-        on_press:
-            app.root.current = 'library_page'
-            app.root.transition = NoTransition()
-
-    Button:
-        id: search_btn
-        text: 'Search'
-        on_press:
-            app.root.current = 'search_page'
-            app.root.transition = NoTransition()
-
-    Button:
-        id: downloads_btn
-        text: 'Downloads'
-        on_press:
-            app.root.current = 'downloads_page'
-            app.root.transition = NoTransition()

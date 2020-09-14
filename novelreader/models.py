@@ -59,7 +59,7 @@ class Database:
             conditions = " ".join(["WHERE", part]) if len(conditions) > 0 else ""
         else: 
             values = (conditions[1],)
-            conditions = f"where {conditions[0].upper()} = ?"
+            conditions = f"WHERE {conditions[0].upper()} = ?"
         return conditions, values
 
     # @show

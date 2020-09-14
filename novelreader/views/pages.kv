@@ -1,6 +1,42 @@
-PageManager:
-    LibraryPage:
-    SearchPage:
-    DownloadsPage:
-    InfoPage:
-    ReaderPage:
+<MainWindow>:
+    orientation: 'vertical'
+
+    ScreenManager:
+        id: page_manager
+
+        LibraryPage:
+            id: library_page
+
+        SearchPage:
+            id: library_page
+
+        DownloadsPage:
+            id: downloads_page
+
+        InfoPage:
+            id: info_page
+
+        ReaderPage:
+            id: reader_page
+
+    BottomControlBar:
+        id: bottom_navigation
+
+<BottomControlBar>:
+    orientation: 'horizontal'
+    size_hint: 1, .1
+
+    Button:
+        id: library_btn
+        text: 'Library'
+        background_color: 0.1725, 0.2431, 0.3137, 1
+
+    Button:
+        id: search_btn
+        text: 'Search'
+        background_color: 0.1725, 0.2431, 0.3137, 1
+
+    Button:
+        id: downloads_btn
+        text: 'Downloads'
+        background_color: 0.1725, 0.2431, 0.3137, 1

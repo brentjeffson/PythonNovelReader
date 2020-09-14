@@ -22,6 +22,8 @@ class SearchPage(Screen):
     
     def on_start(self, repository):
         self.repo = repository
+        print()
+        # self.ids.controls.ids.library_btn.background_color = (0.94, 0.64, 0, 1)
 
     def goto_info_page(self, url):
         # get novel data from web

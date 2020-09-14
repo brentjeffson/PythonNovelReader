@@ -16,7 +16,6 @@ import requests
 import threading
 
 
-
 Builder.load_file(str(Path('novelreader/views/info_page.kv').absolute()))
 
 class InfoPage(Screen):
@@ -71,7 +70,7 @@ class InfoPage(Screen):
         
     def read_chapter(self, chapter_url):
         # check first if chapter has content in database
-        chapter = self.repo.get_chapter()
+        chapter = self.repo.get_chapter(chapter_url)
 
         if chapter:
             # chapter in database
