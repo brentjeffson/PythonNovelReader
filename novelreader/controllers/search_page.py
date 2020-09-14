@@ -38,7 +38,7 @@ class SearchPage(Screen):
             thumbnail=novel.thumbnail,
             meta=meta,
             chapters=chapters
-        ))
+        ), False)
         self.manager.current = "info_page"
 
     def update_search_list(self, novels: {}):
@@ -63,11 +63,15 @@ class SearchPage(Screen):
         self.search_input.text = ""
 
     def search_work(self, keyword: str, website: Website):
-        novels = self.repo.search(keyword, website)
-        if novels:
-            plog(["# Of Searched"], len(novels))
-            self.update_search_list(novels)
-        self.__searching = False
+        try:
+            novels = self.repo.search(keyword, website)
+            if novels:
+                plog(["# Of Searched"], len(novels))
+                self.update_search_list(novels)
+        except requests.exceptions.ConnectionError as ex:
+            plog(['search exception'], ex)
+        finally:
+            self.__searching = False
         
 class SearchItem(Button):
     url = StringProperty()

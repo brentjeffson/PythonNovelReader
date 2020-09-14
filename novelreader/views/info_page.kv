@@ -5,20 +5,30 @@
         orientation: 'vertical'
         spacing: 8
 
-        GridLayout:
-            rows: 2
-            cols: 2
-            size_hint_y: 0.25
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.15
 
-            Label:
-                Image:
-                    id: thumbnail
-                    center: self.parent.center
-                    allow_stretch: True
-                    keep_ratio: False
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.4
 
-            GridLayout:
-                rows: 6
+                Label:
+                    size_hint_y: 0.8
+                    Image:
+                        id: thumbnail
+                        center: self.parent.center
+                        allow_stretch: True
+                        keep_ratio: False
+                Button:
+                    id: add_novel_btn
+                    text: 'Add to library'
+                    size_hint_y: 0.2
+                    on_press: root.add_to_library()
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.6
 
                 Label:
                     id: title
@@ -44,10 +54,6 @@
                 InfoItem:
                     id: rating
                     name: 'Rating'
-            
-            Button:
-                text: 'Add to library'
-                on_press: root.add_to_library()
 
         RecycleView:
             id: chapter_list
@@ -67,10 +73,12 @@
     on_press: root.read()
 
 <InfoItem>
-    cols: 2
+    orientation: 'horizontal'
 
     Label:
         text: root.name
+        size_hint_x: 0.2
 
     Label:
         text: root.value
+        size_hint_x: 0.8

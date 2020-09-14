@@ -2,7 +2,7 @@ from kivy.app import Builder
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.screenmanager import Screen
-from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from wescrape.helpers import identify_parser, identify_status
 from wescrape.parsers.nparse import BoxNovelCom, WuxiaWorldCo
@@ -36,13 +36,15 @@ class InfoPage(Screen):
         """Initialize Required Variables"""
         self.repo = repository
 
-    def open(self, novel):
+    def open(self, novel, offline):
         # set novel as property
         self.novel = novel
         # download thumbnail
         threading.Thread(target=self.download_work, args=(novel.thumbnail,)).start()
         # update widgets
         self.update_widgets(novel)
+        # check if novel is in database
+        self.ids.add_novel_btn.disabled = True if self.repo.get_novel(novel.url) is not None else False
 
     def update_widgets(self, novel: Novel):
         """Update All Widgets"""
@@ -115,7 +117,7 @@ class ChapterItem(Button):
         plog(["reading"], self.text)
         self.parent.parent.parent.parent.read_chapter(self.url)
 
-class InfoItem(GridLayout):
+class InfoItem(BoxLayout):
     """Contain a name and value"""
     name = StringProperty()
     value = StringProperty()
