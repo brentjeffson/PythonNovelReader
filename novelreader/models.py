@@ -52,7 +52,7 @@ class Database:
         return self.__conn
 
     # @show
-    def __conditions_builder(self, conditions: [(str, any)]):  
+    def __conditions_builder(conditions: [(str, any)]):  
         if type(conditions) == list:
             values = tuple([c[1] for c in conditions]) 
             part = " AND ".join([f"{c[0].upper()} = ?" for c in conditions])
@@ -62,20 +62,32 @@ class Database:
             conditions = f"WHERE {conditions[0].upper()} = ?"
         return conditions, values
 
+    def __set_builder(sets: [(str, any)]):
+        values = tuple( [ s[1] for s in sets ] )
+        cols = ", ".join( f"{s[0].upper()} = ?" for s in sets )
+        return cols, values
+
     # @show
     def __select(self, table: str, cols:[str] = ["*",], conditions: [(str, any)] = []):
         cols = " ".join(cols) if type(cols) == list else cols
-        conditions, values = self.__conditions_builder(conditions)
+        conditions, values = Database.__conditions_builder(conditions)
         statement = f"""SELECT {cols} FROM {table} {conditions}""".strip().upper()
         rows = self.__conn.execute(statement, values)
         return rows
 
-    def __update(self, table: str, cols=[str], conditions=[(str, any)]):
+    def __update(self, table: str, cols=[(str, any)], conditions=[(str, any)]):
         valid_tables = ["novels", "chapters", "metas"]
         if table.lower() not in valid_tables:
             return None
-        cols = ", ".join(cols) if type(cols) == list else cols
-        conditions, values = self.__conditions_builder(conditions)
+        
+        values = []
+        cols, vals = Database.__set_builder(cols)
+        values.extend(vals)
+
+        conditions, vals = Database.__conditions_builder(conditions)
+        values.extend(vals)
+        values = tuple(values)
+
         statement = f"UPDATE {table} SET {cols} {conditions}".strip().upper()
         self.__conn.execute(statement, values)
 
@@ -198,37 +210,16 @@ class Database:
 
     def update_chapter(self, chapter: Chapter):
         """Update cols of selected chapter whose col URL is `url`"""
-        if type(chapter) == Chapter:
-            chapter = chapter.__dict__
-        self.update_chapter_v2(chapter)
-        # statement = """UPDATE CHAPTERS 
-        # SET CHAPTER_ID = ?,
-        #     TITLE = ?,
-        #     CONTENT = ?,
-        #     HAS_READ = ?
-        # WHERE URL = ?;"""
-
-        # values = (
-        #     chapter["id"],
-        #     chapter["title"],
-        #     chapter["content"],
-        #     chapter["has_read"],
-        #     chapter["url"]
-        # )
-
-        # self.__conn.execute(statement, values)
-
-    def update_chapter_v2(self, chapter: Chapter):
         self.__update(
             "chapters",
-            ["content"],
-            ("url", chapter["url"])
+            [("content", chapter.content)],
+            [("url", chapter.url)]
         )
     
     def update_meta(self, meta: Meta):
         self.__update(
             "metas",
-            ["status"],
+            [("status", meta.status.name)],
             [("novel_url", meta.novel_url)]
         )
 
