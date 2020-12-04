@@ -6,6 +6,7 @@ setup(
     description='Novel Reader',
     author='Brent Jeffson F. Florendo',
     author_email='brentjeffson@gmail.com',
+    include_package_data=True,
     packages=find_packages(
         exclude=()
     ),

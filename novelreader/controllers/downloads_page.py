@@ -4,7 +4,7 @@ from . import BoxLayout
 from . import RecycleView
 from . import Path
 
-Builder.load_file(str(Path('novelreader/views/downloads_page.kv').absolute()))
+Builder.load_file(str(Path('novelreader/views/downloads_page.kv')))
 
 class DownloadsPage(Screen):
     """Page containing downloads in progress"""

@@ -4,4 +4,7 @@
 __pycache__
 tests
 .idea/
+.*
 novelreader/public
+dist
+build

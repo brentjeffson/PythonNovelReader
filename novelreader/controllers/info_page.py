@@ -16,7 +16,7 @@ import requests
 import threading
 
 
-Builder.load_file(str(Path('novelreader/views/info_page.kv').absolute()))
+Builder.load_file(str(Path('novelreader/views/info_page.kv')))
 
 class InfoPage(Screen):
     """Page containing informations related to novel"""

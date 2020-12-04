@@ -10,7 +10,7 @@ from functools import partial
 import requests
 import threading
 
-Builder.load_file(str(Path("novelreader/views/search_page.kv").absolute()))
+Builder.load_file(str(Path("novelreader/views/search_page.kv")))
 
 class SearchPage(Screen):
     search_list_recycle = ObjectProperty()

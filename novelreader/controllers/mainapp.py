@@ -17,7 +17,7 @@ import sqlite3 as sql
 import requests
 
 Window.size = (840, 640)
-Builder.load_file(str(Path("novelreader/views/pages.kv").absolute()))
+Builder.load_file(str(Path("novelreader/views/pages.kv")))
 
 DEFAULT_PAGE = "library_page"
 class MainWindow(BoxLayout):
@@ -79,6 +79,11 @@ class MainApp(App):
         session = requests.Session()
         services = Services.build(session)
 
+        # create folder if not exits
+        if not Path("novelreader", "public").exists():
+            Path("novelreader", "public").mkdir()
+        if not Path("novelreader", "public", "imgs").exists():
+            Path("novelreader", "public", "imgs").mkdir()
         # create database instance
         database = Database.build(str(Path("novelreader", "public", "novels.db")))
 

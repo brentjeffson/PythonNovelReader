@@ -17,7 +17,7 @@ from novelreader.helpers import plog, thumbnail_path
 import requests
 import threading
 
-Builder.load_file(str(Path('novelreader/views/library_page.kv').absolute()))
+Builder.load_file(str(Path('novelreader/views/library_page.kv')))
 
 class LibraryPage(Screen):
     novellist = ObjectProperty(None)
